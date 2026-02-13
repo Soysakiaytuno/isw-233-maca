@@ -1,0 +1,27 @@
+body {
+  background-color: #A7CFED;
+}
+a {
+color: #554CDB;
+text-decoration: none;
+}
+nav {
+display: flex;
+gap: 20px;
+justify-content: right;
+}
+.textos-principales
+{
+    color: #4F32B7;
+    text-align: center;
+}
+.Circulo-Fondo
+{
+    width: 1400px;
+    height: 500px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -250px;
+    background-color: #4C71DB;
+    left: 0%;
+}
