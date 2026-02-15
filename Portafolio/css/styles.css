@@ -1,5 +1,6 @@
 body {
   background-color: #A7CFED;
+  overflow: hidden;
 }
 a {
 color: #554CDB;
@@ -15,13 +16,26 @@ justify-content: right;
     color: #4F32B7;
     text-align: center;
 }
+.subtitulo-texto
+{
+    color: #4C71DB;
+}
+.texto-intro
+{
+    color: #ffffff;
+    background-color: #4C71DB;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+}
 .Circulo-Fondo
 {
-    width: 1400px;
+    width: 100vw;
     height: 500px;
     border-radius: 50%;
     position: absolute;
     bottom: -250px;
     background-color: #4C71DB;
-    left: 0%;
+    left: 50%;
+    transform: translateX(-50%);
 }
