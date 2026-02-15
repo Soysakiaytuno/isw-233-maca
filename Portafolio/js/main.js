@@ -1,32 +1,40 @@
-const introduccion = document.querySelector('.textos-principales');
-const galeryproject = document.querySelector('.proyectos');
-const btnInicio = document.querySelector('#btn-inicio');
-const btnGaleria = document.querySelector('#btn-galeria');
+const secciones = document.querySelectorAll('.seccion-rueda');
+const links = document.querySelectorAll('.nav-link');
+let indiceActual = 0;
+let bloqueado = false;
 
-function mostrarProyectos() {
-    introduccion.classList.add('rotar-salida');
-    galeryproject.classList.add('rotar-entrada');
+function cambiarSeccion(nuevoIndice) {
+    if (bloqueado || nuevoIndice === indiceActual || nuevoIndice < 0 || nuevoIndice >= secciones.length) return;
+
+    bloqueado = true;
+
+    secciones.forEach((sec, i) => {
+        sec.classList.remove('estado-actual', 'estado-pasado', 'estado-futuro');
+        
+        if (i < nuevoIndice) {
+            sec.classList.add('estado-pasado');
+        } else if (i === nuevoIndice) {
+            sec.classList.add('estado-actual');
+        } else {
+            sec.classList.add('estado-futuro');
+        }
+    });
+
+    indiceActual = nuevoIndice;
+    setTimeout(() => { bloqueado = false; }, 1000);
 }
-
-function mostrarInicio() {
-    introduccion.classList.remove('rotar-salida');
-    galeryproject.classList.remove('rotar-entrada');
-}
-
-window.addEventListener('wheel', (event) => {
-    if (event.deltaY > 0) {
-        mostrarProyectos();
-    } else if (event.deltaY < 0) {
-        mostrarInicio();
+window.addEventListener('wheel', (e) => {
+    if (e.deltaY > 0) {
+        cambiarSeccion(indiceActual + 1);
+    } else {
+        cambiarSeccion(indiceActual - 1);
     }
 });
 
-btnGaleria.addEventListener('click', (e) => {
-    e.preventDefault();
-    mostrarProyectos();
-});
-
-btnInicio.addEventListener('click', (e) => {
-    e.preventDefault();
-    mostrarInicio();
+links.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = parseInt(link.getAttribute('data-index'));
+        cambiarSeccion(target);
+    });
 });

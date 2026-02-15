@@ -21,6 +21,8 @@ nav a {
 }
 .textos-principales
 {
+    opacity: 1;
+    transform: rotate(0deg);
     color: #4F32B7;
     text-align: center;
     z-index: 2;
@@ -39,7 +41,7 @@ nav a {
 }
 .Circulo-Fondo
 {
-    width: 75vw;
+    width: 50vw;
     height: 500px;
     border-radius: 50%;
     position: absolute;
@@ -60,7 +62,7 @@ nav a {
     align-items: center;
     transform-origin: bottom;
 }
-.proyectos
+.proyectos, .blog, .Sobre-Mi, .Contacto
 {
     z-index: 1;
     transform: rotate(90deg);
@@ -72,6 +74,7 @@ nav a {
     justify-content: center;
 }
 .tarjeta {
+    cursor: pointer;
     background-color: #ffffff;
     padding: 0px;
     margin-left: 0%;
@@ -105,9 +108,41 @@ nav a {
     overflow: hidden;
 }
 .rotar-entrada {
-    transform-origin: bottom right;
+    
     z-index: 3;
     transform: rotate(0deg);
     transition: all 1s ease;
     opacity: 1;
+}
+.seccion-rueda {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 1s cubic-bezier(0.645, 0.045, 0.355, 1); /* Transición más elegante */
+    transform-origin: bottom;
+    opacity: 0;
+    transform: rotate(90deg); /* Todas empiezan "a la derecha" */
+    z-index: 1;
+}
+.estado-pasado {
+    transform-origin: bottom left;
+    transform: rotate(-90deg);
+    opacity: 0;
+    z-index: 1;
+}
+.estado-actual {
+    transform: rotate(0deg);
+    opacity: 1;
+    z-index: 5;
+}
+.estado-futuro {
+    transform-origin: bottom right;
+    transform: rotate(90deg);
+    opacity: 0;
+    z-index: 1;
 }
