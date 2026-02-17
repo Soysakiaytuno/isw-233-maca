@@ -1,6 +1,7 @@
 body {
     background-color: #A7CFED;
     overflow: hidden;
+    font-family: "Helvetica";
 }
 header {
     position: relative;
@@ -27,22 +28,33 @@ nav a {
     text-align: center;
     z-index: 2;
 }
+.textos-principales, .proyectos, .sobre-mi, .blog, .contacto
+{
+    padding: 50px 0px;
+}
+.textos-principales h1, .textos-principales h2
+{
+    font-weight: bold;
+}
 .subtitulo-texto
 {
     color: #4C71DB;
 }
 .texto-intro
 {
+    text-align: left;
     color: #ffffff;
     background-color: #4C71DB;
-    padding: 20px;
+    padding: 25px;
     border-radius: 10px;
     display: inline-block;
+    text-overflow: ellipsis;
+    max-width: 200px;
 }
 .Circulo-Fondo
 {
-    width: 50vw;
-    height: 500px;
+    width: 100vw;
+    height: 450px;
     border-radius: 50%;
     position: absolute;
     bottom: -250px;
@@ -55,6 +67,10 @@ nav a {
     gap: 40px;
     justify-content: center;
 }
+.proyectos h2, .sobre-mi h2, .blog h2, .contacto h2 {
+    color: #4F32B7;
+    margin-bottom: 20px;
+}
 .tarjeta {
     cursor: pointer;
     background-color: #ffffff;
@@ -64,16 +80,19 @@ nav a {
     border-radius: 10px;
     display: inline-block;
     width: 300px;
-    height: 400px;
+    height: auto;
     text-align: center;
+    text-overflow: ellipsis;
 }
 .tarjeta h3{
     font-size: 22px;
-    margin-top: 15px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 .tarjeta p{
     font-size: 16px;
-    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 .tarjeta img {
     width: 100%;
@@ -169,18 +188,70 @@ nav a {
 }
 .informacion
 {
-    padding: 50px;
     flex-direction: column;
     display: flex;
 }
 .infobloque
 {
     gap: 50px;
+    padding-top: 0px;
+    padding-bottom: 20px;
     flex-direction: row;
     display: flex;
 }
 .infoprincipal
 {
+    margin: 0;
     flex-direction: column;
     display: flex;
+}
+.infoprincipal h3
+{
+    color: #4F32B7;
+    display: inline-block;
+    max-width: 200px;
+}
+.infotarjeta
+{
+    background-color: #ffffff;
+    border-radius: 10px;
+    text-align: center;
+    display: inline-block;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    max-height: 225px;
+    min-height: auto;
+}
+.infotarjeta p
+{
+    text-align: left;
+    padding: 20px;
+    padding-top: 0px;
+    font-size: 14px;
+}
+.infotarjeta h3
+{
+    color: black;
+}
+.infobloque img
+{
+    width: 200px;
+    height: 200px;
+    padding: 20px;
+    border-radius: 25%;
+    object-fit: cover;
+    display: block;
+}
+.nav-link.activo {
+    background-color: #4C71DB;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px 12px;
+    transition: all 0.3s ease;
+}
+
+nav a {
+    padding: 5px;
+    border: 1px solid transparent; 
 }

@@ -19,10 +19,19 @@ function cambiarSeccion(nuevoIndice) {
             sec.classList.add('estado-futuro');
         }
     });
-
+    links.forEach((link, i) => {
+        if (i === nuevoIndice) {
+            link.classList.add('activo');
+        } else {
+            link.classList.remove('activo');
+        }
+    });
     indiceActual = nuevoIndice;
     setTimeout(() => { bloqueado = false; }, 1000);
 }
+
+cambiarSeccion(0);
+
 window.addEventListener('wheel', (e) => {
     if (e.deltaY > 0) {
         cambiarSeccion(indiceActual + 1);
