@@ -152,6 +152,7 @@ nav a {
 }
 .redsocial-entrada
 {
+    cursor: pointer;
     justify-content: left;
     text-align: center;
     flex-direction: column;
@@ -165,4 +166,21 @@ nav a {
     padding: 20px;
     object-fit: cover;
     display: block;
+}
+.informacion
+{
+    padding: 50px;
+    flex-direction: column;
+    display: flex;
+}
+.infobloque
+{
+    gap: 50px;
+    flex-direction: row;
+    display: flex;
+}
+.infoprincipal
+{
+    flex-direction: column;
+    display: flex;
 }
