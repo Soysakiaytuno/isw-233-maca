@@ -3,32 +3,52 @@ class SeabattleField:
         self.size = size
         # Inicializamos la matriz de 10x10 con agua ("~")
         self.grid = [["~" for _ in range(self.size)] for _ in range(self.size)]
-        
-    def place_ship(self, row, col, length, orientation):
-        """
-        Lógica para colocar un barco en la matriz.
-        orientation: 'H' (horizontal) o 'V' (vertical)
-        """
-        # Aquí iría la lógica algorítmica para escribir "B" (Barco) en la matriz
-        # asegurando que no se salga de los límites.
-        pass
-
-    def receive_attack(self, row, col):
-        """
-        Evalúa qué pasa cuando el oponente dispara a esta coordenada.
-        Retorna: "IMPACTO", "FALLO" o "HUNDIDO"
-        """
-        estado_actual = self.grid[row][col]
-        
-        if estado_actual == "B":  # Si hay un barco
-            self.grid[row][col] = "X"  # Marcamos el impacto
+    def shot(self, x, y):
+        estado_actual = self.grid[x][y]
+        if estado_actual == "B":
+            self.mark(x, y, "X")
             return "IMPACTO"
-        elif estado_actual == "~": # Si hay agua
-            self.grid[row][col] = "O"  # Marcamos el fallo
+        elif estado_actual == "~":
+            self.mark(x, y, "O")
             return "FALLO"
+        return "YA_ATACADO"
+
+    def mark(self, x, y, value):
+        self.grid[x][y] = value
+
+    def is_losser(self):
+        for fila in self.grid:
+            if "B" in fila:
+                return False
+        return True
+
+    def place_ship(self, row, col, length, orientation):
+        # 1. Validar que no se salga de los límites
+        if orientation == 'H' and col + length > self.size:
+            return False
+        if orientation == 'V' and row + length > self.size:
+            return False
+
+        # 2. Validar que no haya otro barco en ese espacio
+        if orientation == 'H':
+            for i in range(length):
+                if self.grid[row][col + i] != "~":
+                    return False
+        else: # 'V'
+            for i in range(length):
+                if self.grid[row + i][col] != "~":
+                    return False
+
+        # 3. Si pasó las validaciones, lo colocamos (marcamos con "B")
+        if orientation == 'H':
+            for i in range(length):
+                self.grid[row][col + i] = "B"
         else:
-            return "YA_ATACADO" # Si dispara donde ya había disparado
-            
+            for i in range(length):
+                self.grid[row + i][col] = "B"
+                
+        return True
+
     def display(self):
         """Imprime el tablero en consola (útil para debug)."""
         for fila in self.grid:
