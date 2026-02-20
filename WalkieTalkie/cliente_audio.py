@@ -32,9 +32,7 @@ print("[*] Habla por el micrófono... (Presiona Ctrl+C para detener)")
 
 try:
     while True:
-        # EL SECRETO: exception_on_overflow=False evita que el programa explote 
-        # si el micrófono captura datos más rápido de lo que la red puede enviar
-        data = stream_input.read(CHUNK, exception_on_overflow=False)
+        data = stream_input.read(CHUNK, exception_on_overflow=True)
         
         # Enviar por UDP
         sock.sendto(data, (IP_SERVIDOR, PUERTO_SERVIDOR))

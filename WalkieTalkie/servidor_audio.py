@@ -12,7 +12,6 @@ def obtener_ip_local():
     except Exception:
         return "127.0.0.1"
 
-# Configuración de Audio
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -22,18 +21,13 @@ print("=================================")
 print("        SERVIDOR DE AUDIO        ")
 print("=================================")
 
-# 1. Obtener IP y Puerto
 mi_ip = obtener_ip_local()
 entrada_puerto = input("Ingresa el puerto para escuchar (ej. 5005): ")
 PUERTO = int(entrada_puerto) if entrada_puerto.strip() else 5005
 
-# 2. Preparar Socket UDP
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(("0.0.0.0", PUERTO))
 
-# EL TRUCO ESTÁ AQUÍ:
-# Le decimos al socket que espere máximo 1 segundo. 
-# Así el programa "respira" y puede detectar el Ctrl+C.
 sock.settimeout(1.0) 
 
 # 3. Preparar Altavoces
@@ -51,15 +45,10 @@ print("[*] Escuchando... (Presiona Ctrl+C para apagar)")
 try:
     while True:
         try:
-            # Intentamos recibir el paquete de audio
             data, addr = sock.recvfrom(4096)
-            # Lo reproducimos en los altavoces
             stream_output.write(data)
-            
         except socket.timeout:
-            # Si pasa 1 segundo y nadie habla, ignoramos el error.
-            # El ciclo `while` vuelve a empezar, lo que permite
-            # a Python revisar si presionaste Ctrl+C.
+            raise socket.timeout("No hay conexion se finalizara automaticamente")
             continue
 
 except KeyboardInterrupt:
