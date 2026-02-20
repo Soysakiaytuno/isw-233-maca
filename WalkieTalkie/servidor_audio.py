@@ -29,7 +29,12 @@ PUERTO = int(entrada_puerto) if entrada_puerto.strip() else 5005
 
 # 2. Preparar Socket UDP
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(("0.0.0.0", PUERTO)) # 0.0.0.0 permite escuchar desde cualquier tarjeta de red
+sock.bind(("0.0.0.0", PUERTO))
+
+# EL TRUCO ESTÁ AQUÍ:
+# Le decimos al socket que espere máximo 1 segundo. 
+# Así el programa "respira" y puede detectar el Ctrl+C.
+sock.settimeout(1.0) 
 
 # 3. Preparar Altavoces
 p = pyaudio.PyAudio()
@@ -45,17 +50,27 @@ print("[*] Escuchando... (Presiona Ctrl+C para apagar)")
 
 try:
     while True:
-        # Recibimos el paquete de audio
-        data, addr = sock.recvfrom(4096)
-        # Lo reproducimos en los altavoces
-        stream_output.write(data)
+        try:
+            # Intentamos recibir el paquete de audio
+            data, addr = sock.recvfrom(4096)
+            # Lo reproducimos en los altavoces
+            stream_output.write(data)
+            
+        except socket.timeout:
+            # Si pasa 1 segundo y nadie habla, ignoramos el error.
+            # El ciclo `while` vuelve a empezar, lo que permite
+            # a Python revisar si presionaste Ctrl+C.
+            continue
 
 except KeyboardInterrupt:
-    print("\n[*] Apagando servidor...")
+    print("\n[*] Apagando servidor de forma segura...")
 except Exception as e:
-    print(f"\n[!] Ocurrió un error: {e}")
+    print(f"\n[!] Ocurrió un error inesperado: {e}")
 finally:
+    # Cerramos todo correctamente
+    print("[*] Liberando puerto y hardware de audio...")
     stream_output.stop_stream()
     stream_output.close()
     p.terminate()
     sock.close()
+    print("[*] Servidor cerrado.")
