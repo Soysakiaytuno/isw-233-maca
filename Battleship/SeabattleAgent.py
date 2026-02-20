@@ -45,7 +45,7 @@ class SeabattleAgent:
                     fila_rival, col_rival = map(int, coordenadas.split(","))
                     
                     resultado_defensa = self.my_field.shot(fila_rival, col_rival)
-                    print(f"El oponente disparó a su fila {fila_rival}, col {col_rival}. Fue un: {resultado_defensa}")
+                    print(f"El oponente disparó a su fila {fila_rival + 1}, col {col_rival + 1}. Fue un: {resultado_defensa}")
                     self.print_fields()
                     
                     if self.is_game_ended():
