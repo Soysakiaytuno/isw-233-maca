@@ -78,7 +78,7 @@ class SeabattleAgent:
         if self.is_server:
             sock.bind((self.ip, self.port))
             sock.listen(1)
-            print(f"[*] Esperando al oponente en {self.ip}:{self.port}...")
+            print(f"[*] Esperando al oponente en {self.ip}: {self.port}...")
             self.connection, address = sock.accept()
             print(f"[*] Oponente conectado desde {address}")
         else:
