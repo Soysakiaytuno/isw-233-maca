@@ -1,38 +1,23 @@
-import socket
-from SeabattleAgent import SeabattleAgent
+from SeabattleAgent import SeabattleAgent, obtener_ip_local
 
-entrada_semilla = input("Ingresa un número (semilla) para generar tus barcos al azar: ")
+print("=================================")
+print("      ANFITRIÓN (JUGADOR 1)      ")
+print("=================================")
+
+mi_ip = obtener_ip_local()
+
+# 1. Pedir la semilla
+entrada_semilla = input("Ingresa un número (semilla) para generar tu mapa: ")
+puerto = input("Ingresa el puerto para la conexión (ej: 65432): ")
 try:
     semilla = int(entrada_semilla)
-
 except ValueError:
-    print("No ingresaste un número válido. Usando semilla por defecto (123).")
+    print("Entrada no válida. Usando semilla por defecto (123).")
     semilla = 123
 
-def obtener_ip_local():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-        s.close()
-        return ip
-    except Exception:
-        return "127.0.0.1"
+print(f"\n[*] Tu IP es: {mi_ip} (Dísela al Jugador 2)")
 
-ip = obtener_ip_local()
-puerto = input("Ingresa el puerto para la conexión (ej: 65432): ")
-
-print("--- INICIANDO JUGADOR 1 (HOST) ---")
-
-print(f"[*] Tu IP local es: {ip}")
-
-print(f"[*] Pídele al Jugador 2 que se conecte a esta IP.")
-
-agente_servidor = SeabattleAgent(ip, int(puerto), is_server=True)
-
-agente_servidor.my_field.place_ships_randomly(semilla)
-
-agente_servidor.setup_network()
-
-agente_servidor.star_game()
-
+# 2. Iniciar el juego
+agente = SeabattleAgent(mi_ip, int(puerto), is_server=True)
+agente.setup_network()
+agente.start_game(semilla)
