@@ -18,9 +18,8 @@ class SeabattleAgent:
         while jugando:
             if mi_turno:
                 print("\n--- TU TURNO DE ATACAR ---")
-                fila = input("Ingresa la fila a atacar (0-9): ")
-                col = input("Ingresa la columna a atacar (0-9): ")
-                
+                cord = input("Ingresa la coordenada a atacar (ej: B1): ")
+                fila, col = self.parse_move(cord)
                 mensaje_ataque = self.move_to_string(fila, col)
                 self.send_message(mensaje_ataque)
                 
@@ -41,24 +40,27 @@ class SeabattleAgent:
                     jugando = False
                     continue
 
-                fila_rival, col_rival = self.parse_move(datos_recibidos)
-                
-                resultado_defensa = self.my_field.shot(fila_rival, col_rival)
-                print(f"El oponente disparó a {fila_rival},{col_rival}. Fue un: {resultado_defensa}")
-                self.print_fields()
-                
-                if self.is_game_ended():
-                    self.send_message("GANASTE")
-                    print("Has perdido. Todos tus barcos hundidos.")
-                    jugando = False
-                else:
-                    self.send_message(resultado_defensa)
-                    mi_turno = True
+                if datos_recibidos.startswith("ATACAR"):
+                    _, coordenadas = datos_recibidos.split(" ")
+                    fila_rival, col_rival = map(int, coordenadas.split(","))
+                    
+                    resultado_defensa = self.my_field.shot(fila_rival, col_rival)
+                    print(f"El oponente disparó a su fila {fila_rival}, col {col_rival}. Fue un: {resultado_defensa}")
+                    self.print_fields()
+                    
+                    if self.is_game_ended():
+                        self.send_message("GANASTE")
+                        print("Has perdido. Todos tus barcos hundidos.")
+                        jugando = False
+                    else:
+                        self.send_message(resultado_defensa)
+                        mi_turno = True
 
     def parse_move(self, text):
-        _, coords = text.split(" ")
-        r, c = coords.split(",")
-        return int(r), int(c)
+        text = text.strip().upper() # Limpia espacios y pasa a mayúscula
+        r = ord(text[0]) - ord('A') # 'A' se vuelve 0, 'B' se vuelve 1, etc.
+        c = int(text[1:]) - 1       # '1' se vuelve 0, '2' se vuelve 1, etc.
+        return r, c
 
     def move_to_string(self, x, y):
         return f"ATACAR {x},{y}"

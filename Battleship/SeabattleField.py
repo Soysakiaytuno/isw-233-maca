@@ -1,7 +1,6 @@
 class SeabattleField:
-    def __init__(self, size=10):
+    def __init__(self, size=8):
         self.size = size
-        # Inicializamos la matriz de 10x10 con agua ("~")
         self.grid = [["~" for _ in range(self.size)] for _ in range(self.size)]
     def shot(self, x, y):
         estado_actual = self.grid[x][y]
@@ -23,23 +22,20 @@ class SeabattleField:
         return True
 
     def place_ship(self, row, col, length, orientation):
-        # 1. Validar que no se salga de los límites
         if orientation == 'H' and col + length > self.size:
             return False
         if orientation == 'V' and row + length > self.size:
             return False
-
-        # 2. Validar que no haya otro barco en ese espacio
+        
         if orientation == 'H':
             for i in range(length):
                 if self.grid[row][col + i] != "~":
                     return False
-        else: # 'V'
+        else:
             for i in range(length):
                 if self.grid[row + i][col] != "~":
                     return False
 
-        # 3. Si pasó las validaciones, lo colocamos (marcamos con "B")
         if orientation == 'H':
             for i in range(length):
                 self.grid[row][col + i] = "B"
@@ -50,6 +46,7 @@ class SeabattleField:
         return True
 
     def display(self):
-        """Imprime el tablero en consola (útil para debug)."""
-        for fila in self.grid:
-            print(" ".join(fila))
+        print("  1 2 3 4 5 6 7 8")
+        for i, fila in enumerate(self.grid):
+            letra = chr(ord('A') + i)
+            print(f"{letra} " + " ".join(fila))
