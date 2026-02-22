@@ -1,0 +1,31 @@
+.textos-principales
+{
+    opacity: 1;
+    transform: rotate(0deg);
+    color: #4F32B7;
+    text-align: center;
+    z-index: 2;
+}
+.textos-principales, .proyectos, .sobre-mi, .blog, .contacto
+{
+    padding: 50px 0px;
+}
+.textos-principales h1, .textos-principales h2
+{
+    font-weight: bold;
+}
+.subtitulo-texto
+{
+    color: #4C71DB;
+}
+.texto-intro
+{
+    text-align: left;
+    color: #ffffff;
+    background-color: #4C71DB;
+    padding: 25px;
+    border-radius: 10px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}

@@ -1,66 +1,11 @@
-body {
-    background-color: #A7CFED;
-    overflow: hidden;
-    font-family: "Helvetica";
-}
-header {
-    position: relative;
-    z-index: 10;
-}
-a {
-    color: #554CDB;
-    text-decoration: none;
-}
-nav {
-    display: flex;
-    gap: 20px;
-    justify-content: right;
-}
-nav a {
-    cursor: pointer;
-    text-decoration: none;
-}
-.textos-principales
-{
-    opacity: 1;
-    transform: rotate(0deg);
-    color: #4F32B7;
-    text-align: center;
-    z-index: 2;
-}
-.textos-principales, .proyectos, .sobre-mi, .blog, .contacto
+@import url(blocks/header/header.css);
+@import url(blocks/circle/circle.css);
+@import url(blocks/body/body.css);
+@import url(blocks/First_window/first_window.css);
+
+.proyectos, .sobre-mi, .blog, .contacto
 {
     padding: 50px 0px;
-}
-.textos-principales h1, .textos-principales h2
-{
-    font-weight: bold;
-}
-.subtitulo-texto
-{
-    color: #4C71DB;
-}
-.texto-intro
-{
-    text-align: left;
-    color: #ffffff;
-    background-color: #4C71DB;
-    padding: 25px;
-    border-radius: 10px;
-    display: inline-block;
-    text-overflow: ellipsis;
-    max-width: 200px;
-}
-.Circulo-Fondo
-{
-    width: 100vw;
-    height: 450px;
-    border-radius: 50%;
-    position: absolute;
-    bottom: -250px;
-    background-color: #4C71DB;
-    left: 50%;
-    transform: translateX(-50%);
 }
 .contenedor-tarjetas {
     display: flex;
@@ -241,17 +186,4 @@ nav a {
     border-radius: 25%;
     object-fit: cover;
     display: block;
-}
-.nav-link.activo {
-    background-color: #4C71DB;
-    color: white !important;
-    font-weight: bold;
-    border-radius: 5px;
-    padding: 5px 12px;
-    transition: all 0.3s ease;
-}
-
-nav a {
-    padding: 5px;
-    border: 1px solid transparent; 
 }

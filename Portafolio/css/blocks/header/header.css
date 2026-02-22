@@ -1,0 +1,25 @@
+header {
+    position: relative;
+    z-index: 10;
+}
+nav {
+    display: flex;
+    gap: 20px;
+    justify-content: right;
+}
+nav a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #554CDB;
+    text-decoration: none;
+    padding: 5px;
+    border: 1px solid transparent;
+}
+.nav-link.activo {
+    background-color: #4C71DB;
+    color: white !important;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 5px 12px;
+    transition: all 0.3s ease;
+}
