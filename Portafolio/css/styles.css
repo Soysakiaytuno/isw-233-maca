@@ -2,50 +2,17 @@
 @import url(blocks/circle/circle.css);
 @import url(blocks/body/body.css);
 @import url(blocks/First_window/first_window.css);
-
-.proyectos, .sobre-mi, .blog, .contacto
+@import url(blocks/proyectos/proyectos.css);
+.sobre-mi, .blog, .contacto
 {
     padding: 50px 0px;
 }
-.contenedor-tarjetas {
-    display: flex;
-    gap: 40px;
-    justify-content: center;
-}
-.proyectos h2, .sobre-mi h2, .blog h2, .contacto h2 {
+
+.sobre-mi h2, .blog h2, .contacto h2 {
     color: #4F32B7;
     margin-bottom: 20px;
 }
-.tarjeta {
-    cursor: pointer;
-    background-color: #ffffff;
-    padding: 0px;
-    margin-left: 0%;
-    margin-right: 0%;
-    border-radius: 10px;
-    display: inline-block;
-    width: 300px;
-    height: auto;
-    text-align: center;
-    text-overflow: ellipsis;
-}
-.tarjeta h3{
-    font-size: 22px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-.tarjeta p{
-    font-size: 16px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-.tarjeta img {
-    width: 100%;
-    height: 50%;
-    border-radius: 10px 10px 0 0;
-    object-fit: cover;
-    display: block;
-}
+
 .seccion-rueda {
     position: absolute;
     top: 0;
