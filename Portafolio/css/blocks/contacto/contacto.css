@@ -1,0 +1,31 @@
+.contacto
+{
+    padding: 50px 0px;
+}
+.contacto h2 {
+    color: #4F32B7;
+    margin-bottom: 20px;
+}
+.redsocial
+{
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+.redsocial-entrada
+{
+    cursor: pointer;
+    justify-content: left;
+    text-align: center;
+    flex-direction: column;
+    display: flex;
+}
+.redsocial-entrada img
+{
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    padding: 20px;
+    object-fit: cover;
+    display: block;
+}
