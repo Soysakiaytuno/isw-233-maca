@@ -3,6 +3,8 @@
 @import url(blocks/body/body.css);
 @import url(blocks/First_window/first_window.css);
 @import url(blocks/proyectos/proyectos.css);
+@import url(blocks/animations/animations.css);
+
 .sobre-mi, .blog, .contacto
 {
     padding: 50px 0px;
@@ -13,43 +15,6 @@
     margin-bottom: 20px;
 }
 
-.seccion-rueda {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    transition: all 1s cubic-bezier(0.645, 0.045, 0.355, 1);
-    transform-origin: bottom;
-    opacity: 0;
-    transform: rotate(90deg);
-    z-index: 1;
-}
-.textos-principales {
-    opacity: 1;
-    transform: rotate(0deg);
-    z-index: 2;
-}
-.estado-pasado {
-    transform-origin: bottom left;
-    transform: rotate(-90deg);
-    opacity: 0;
-    z-index: 1;
-}
-.estado-actual {
-    transform: rotate(0deg);
-    opacity: 1;
-    z-index: 5;
-}
-.estado-futuro {
-    transform-origin: bottom right;
-    transform: rotate(90deg);
-    opacity: 0;
-    z-index: 1;
-}
 .blogpost
 {
     background-color: #ffffff;

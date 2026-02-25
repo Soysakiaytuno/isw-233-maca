@@ -1,6 +1,6 @@
 const secciones = document.querySelectorAll('.seccion-rueda');
 const links = document.querySelectorAll('.nav-link');
-let indiceActual = 0;
+let indiceActual = -1;
 let bloqueado = false;
 
 function cambiarSeccion(nuevoIndice) {

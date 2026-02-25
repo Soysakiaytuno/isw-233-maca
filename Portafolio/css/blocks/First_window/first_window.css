@@ -5,11 +5,9 @@
     color: #4F32B7;
     text-align: center;
     z-index: 2;
-}
-.textos-principales, .proyectos, .sobre-mi, .blog, .contacto
-{
     padding: 50px 0px;
 }
+
 .textos-principales h1, .textos-principales h2
 {
     font-weight: bold;
