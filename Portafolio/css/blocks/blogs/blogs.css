@@ -1,13 +1,13 @@
-.sobre-mi
+.blog
 {
     padding: 50px 0px;
 }
 
-.blog h2{
+.blog__h2{
     color: #4F32B7;
     margin-bottom: 20px;
 }
-.blogpost
+.blog__post
 {
     background-color: #ffffff;
     padding: 20px;
@@ -18,7 +18,7 @@
     flex-direction: row;
     display: flex;
 }
-.blogpost img
+.blog__post__img
 {
     width: 60px;
     height: 60px;
@@ -27,7 +27,7 @@
     object-fit: cover;
     display: block;
 }
-.blogcontent
+.blog__content
 {
     flex-direction: column;
     display: flex;

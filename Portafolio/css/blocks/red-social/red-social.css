@@ -1,0 +1,23 @@
+.redsocial
+{
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+.redsocial__entrada
+{
+    cursor: pointer;
+    justify-content: left;
+    text-align: center;
+    flex-direction: column;
+    display: flex;
+}
+.redsocial__entrada__img
+{
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    padding: 20px;
+    object-fit: cover;
+    display: block;
+}

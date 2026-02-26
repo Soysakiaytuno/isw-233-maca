@@ -9,14 +9,14 @@ function cambiarSeccion(nuevoIndice) {
     bloqueado = true;
 
     secciones.forEach((sec, i) => {
-        sec.classList.remove('estado-actual', 'estado-pasado', 'estado-futuro');
+        sec.classList.remove('estado__actual', 'estado__pasado', 'estado__futuro');
         
         if (i < nuevoIndice) {
-            sec.classList.add('estado-pasado');
+            sec.classList.add('estado__pasado');
         } else if (i === nuevoIndice) {
-            sec.classList.add('estado-actual');
+            sec.classList.add('estado__actual');
         } else {
-            sec.classList.add('estado-futuro');
+            sec.classList.add('estado__futuro');
         }
     });
     links.forEach((link, i) => {

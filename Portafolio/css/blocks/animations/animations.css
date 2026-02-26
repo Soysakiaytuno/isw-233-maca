@@ -13,18 +13,18 @@
     transform: rotate(90deg);
     z-index: 1;
 }
-.estado-pasado {
+.estado__pasado {
     transform-origin: bottom left;
     transform: rotate(-90deg);
     opacity: 0;
     z-index: 1;
 }
-.estado-actual {
+.estado__actual {
     transform: rotate(0deg);
     opacity: 1;
     z-index: 5;
 }
-.estado-futuro {
+.estado__futuro {
     transform-origin: bottom right;
     transform: rotate(90deg);
     opacity: 0;
