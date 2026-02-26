@@ -20,6 +20,19 @@ Son enlaces a diferentes contactos y redes sociales para poder entrar en contact
 La estructura basica y la division por divs de cada seccion se realiza en el html, dividiendo en los bloques principales (inicio, galeria, blog, sobre mi, contacto), haciendo la mayoria de diviciones por div y clases de css para la estetica y ordenamiento, el html tambien se encarga de cargar todo lo que es el css y el java script para poderlos usar. Para los enlaces se usa la funcion en html de onclick = window.open dentro de su respectivo div. Las animaciones de tipo rueda se hace la carga de las pocisiones trancisiones y tipo de ease (suavizado de movimiento de animacion para la fluidez) para el actual, previo y siguiente, las cuales dependiendo de si se llama por medio del acceso directo o por scroll intercambie de animacion usando el estado actual, previo y posterior. Se utiliza una misma animacion de backgraund color y el font type blod para dar enfacis a la casilla actual, que se desvanece cuando cambia a otra pestaña y en esa se habilita
 <h2>Por que se hace</h2>
 Se hicieron esta forma para dar una forma mas unica pero sencilla de entender a como se ve un portafolio teniendo en cuenta de base "el ciclo de vida de software" para poder dar la idea de rueda, utilizando una paleta de colores inspirada en el azul y el morado para dar un ligero contraste que no incomode para mantener la idea minimalista, usando mas bordes redondeados y formas circulares para dar un toque mas de suavidad sin entrar en la agresividad, ademas se dieron las animaciones asi para dar un entendimiento suave de cada cambio de pantalla, al no usar la barra de scroll tradicional
+<h2>Bloques</h2>
+Los bloques encontraos son los siguientes:<br>
+- animations.- animaciones precargadas y los diferentes estados<br>
+- blogs.- post de blogs como vieñetas de publicaciones <br>
+- body.- el fondo del proyecto<br>
+- circle.- elemento grafico de diseño<br>
+- contacto.- seccion para organizar los contactos<br>
+- header.- parte superior con accesso directo a todas las pantallas<br>
+- info.- Secciones divididas en la pestaña de sobre mi<br>
+- intro.- pagina de inicio<br>
+- proyectos.- pestaña con proyectos y tarjetas de cada proyecto<br>
+- redsocial.- de contacto, todos los bloques para ser contactado<br>
+- sobre mi.- seccion con informacion basica<br>
 <h2>Link al figma</h2>
 https://www.figma.com/design/RgmPV904bFMy9uHGnto2X9/CV?node-id=8-36&t=YQXeITJz42V21X4i-1
 <br>
