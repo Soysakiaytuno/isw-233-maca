@@ -1,0 +1,56 @@
+.info
+{
+    flex-direction: column;
+    display: flex;
+}
+.info__seccion
+{
+    gap: 50px;
+    padding-top: 0px;
+    padding-bottom: 20px;
+    flex-direction: row;
+    display: flex;
+}
+.info__principal
+{
+    margin: 0;
+    flex-direction: column;
+    display: flex;
+}
+.info__principal__h2
+{
+    color: #4F32B7;
+    display: inline-block;
+    max-width: 200px;
+}
+.info__tarjeta
+{
+    background-color: #ffffff;
+    border-radius: 10px;
+    text-align: center;
+    display: inline-block;
+    text-overflow: ellipsis;
+    max-width: 250px;
+    max-height: 225px;
+    min-height: auto;
+}
+.info__tarjeta__p
+{
+    text-align: left;
+    padding: 20px;
+    padding-top: 0px;
+    font-size: 14px;
+}
+.info__tarjeta__h3
+{
+    color: black;
+}
+.info__img
+{
+    width: 200px;
+    height: 200px;
+    padding: 20px;
+    border-radius: 25%;
+    object-fit: cover;
+    display: block;
+}

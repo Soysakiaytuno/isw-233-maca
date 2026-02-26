@@ -1,4 +1,4 @@
-.textos-principales
+.intro
 {
     opacity: 1;
     transform: rotate(0deg);
@@ -8,15 +8,16 @@
     padding: 50px 0px;
 }
 
-.textos-principales h1, .textos-principales h2
+.intro__titulo
 {
     font-weight: bold;
 }
-.subtitulo-texto
+.intro__subtitulo
 {
     color: #4C71DB;
+    font-weight: bold;
 }
-.texto-intro
+.intro__texto
 {
     text-align: left;
     color: #ffffff;
