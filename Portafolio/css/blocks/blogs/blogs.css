@@ -1,11 +1,32 @@
 .blog
 {
-    padding: 50px 0px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
 }
 
 .blog__h2{
     color: #4F32B7;
-    margin-bottom: 20px;
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(79, 50, 183, 0.1);
+    align-items: top;
+}
+
+.blog__descripcion {
+    font-size: 1.25rem;
+    color: #4a4a4a;
+    max-width: 600px;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    font-weight: 400;
 }
 .blog__post
 {
@@ -39,20 +60,22 @@
 
 .blog__boton {
     background: transparent;
-    border: 2px solid currentColor;
-    padding: 12px 30px;
-    font-size: 1rem;
-    font-weight: 700;
+    border: 2px solid #4F32B7;
+    color: #4F32B7;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 800;
     text-transform: uppercase;
     cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
+    letter-spacing: 2px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(79, 50, 183, 0.1);
 }
 
 .blog__boton:hover {
-    background-color: #fff;
-    color: #000;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    background-color: #4F32B7;
+    color: #fff;
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(79, 50, 183, 0.3);
 }
