@@ -1,5 +1,4 @@
-const secciones = document.querySelectorAll('.seccion-rueda');
-const links = document.querySelectorAll('.nav-link');
+import { ViewportObserver } from './viewport-observer.js';
 
 export class NavigationController {
     constructor(sections, links) {
@@ -7,10 +6,17 @@ export class NavigationController {
         this.links = links;
         this.indiceActual = -1;
         this.bloqueado = false;
+        
+        this.observer = new ViewportObserver((target) => this.actualizarLinks(target));
+        this.observer.observe(this.sections);
     }
 
     cambiarSeccion(nuevoIndice) {
-        if (this.bloqueado || nuevoIndice === this.indiceActual || nuevoIndice < 0 || nuevoIndice >= this.sections.length) return;
+        // Lógica cíclica: verificar extremos y rotar
+        if (nuevoIndice < 0) nuevoIndice = this.sections.length - 1;
+        else if (nuevoIndice >= this.sections.length) nuevoIndice = 0;
+
+        if (this.bloqueado || nuevoIndice === this.indiceActual) return;
 
         this.bloqueado = true;
 
@@ -26,16 +32,19 @@ export class NavigationController {
             }
         });
 
+        this.indiceActual = nuevoIndice;
+        setTimeout(() => { this.bloqueado = false; }, 1000);
+    }
+
+    actualizarLinks(seccionVisible) {
+        const index = Array.from(this.sections).indexOf(seccionVisible);
         this.links.forEach((link, i) => {
-            if (i === nuevoIndice) {
+            if (i === index) {
                 link.classList.add('activo');
             } else {
                 link.classList.remove('activo');
             }
         });
-
-        this.indiceActual = nuevoIndice;
-        setTimeout(() => { this.bloqueado = false; }, 1000);
     }
 
     next() {
