@@ -32,3 +32,27 @@
     flex-direction: column;
     display: flex;
 }
+
+.blog__acceso {
+    margin-top: 10px;
+}
+
+.blog__boton {
+    background: transparent;
+    border: 2px solid currentColor;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border-radius: 50px;
+}
+
+.blog__boton:hover {
+    background-color: #fff;
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}

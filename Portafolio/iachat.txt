@@ -1,0 +1,1258 @@
+vamos a realizar mejoras a este proyecto, "en los cambios que realizes debes mantener lo que es la metodologia bem y si vez alguna falla en esta puedes corregirlo. ahora vamos a ir implementando patrones de diseño, implementa lo que es Command, esto se usara para hacer la deteccion de cuando se haga un scroll hacia abajo o hacia arriba para ir cambiando lde pestaña, y para que siga la metodologia bem correctamente, ayudame separando lo que es la seccion rueda de los diferentes divs de las secciones"
+
+
+Gemini
+Responding with 3 Pro Preview
+Aquí tienes las mejoras solicitadas para tu proyecto.
+
+He realizado los siguientes cambios:
+
+HTML (index.html): Se ha reestructurado el HTML para separar la responsabilidad de seccion-rueda (bloque encargado de la animación/navegación) de los bloques de contenido específico (intro, proyectos, blog, etc.). Esto cumple con la metodología BEM al evitar mezclar bloques con responsabilidades drásticamente diferentes en el mismo elemento DOM, permitiendo una estructura más limpia y escalable.
+JavaScript (main.js): Se ha refactorizado el código para utilizar el Patrón Command. Se creó una clase NavigationController que actúa como el receptor de las acciones, y comandos específicos (ScrollDownCommand, ScrollUpCommand) que encapsulan la intención del usuario al hacer scroll.
+1. Refactorización de JavaScript (Implementación de Patrón Command)
+En este archivo reemplazamos la lógica procedural por una orientada a objetos usando el patrón solicitado.
+
+e:\Appweb\isw-233-maca\Portafolio\js\main.js
+
+main.js
+-29
++76
+const secciones = document.querySelectorAll('.seccion-rueda');
+const links = document.querySelectorAll('.nav-link');
+let indiceActual = -1;
+let bloqueado = false;
+
+function cambiarSeccion(nuevoIndice) {
+    if (bloqueado || nuevoIndice === indiceActual || nuevoIndice < 0 || nuevoIndice >= secciones.length) return;
+class NavigationController {
+    constructor(sections, links) {
+        this.sections = sections;
+        this.links = links;
+        this.indiceActual = -1;
+        this.bloqueado = false;
+    }
+
+    bloqueado = true;
+    cambiarSeccion(nuevoIndice) {
+        if (this.bloqueado || nuevoIndice === this.indiceActual || nuevoIndice < 0 || nuevoIndice >= this.sections.length) return;
+
+    secciones.forEach((sec, i) => {
+        sec.classList.remove('estado__actual', 'estado__pasado', 'estado__futuro');
+        
+        if (i < nuevoIndice) {
+            sec.classList.add('estado__pasado');
+        } else if (i === nuevoIndice) {
+            sec.classList.add('estado__actual');
+        } else {
+            sec.classList.add('estado__futuro');
+        }
+    });
+    links.forEach((link, i) => {
+        if (i === nuevoIndice) {
+            link.classList.add('activo');
+        } else {
+            link.classList.remove('activo');
+        }
+    });
+    indiceActual = nuevoIndice;
+    setTimeout(() => { bloqueado = false; }, 1000);
+        this.bloqueado = true;
+
+        this.sections.forEach((sec, i) => {
+            sec.classList.remove('estado__actual', 'estado__pasado', 'estado__futuro');
+            
+            if (i < nuevoIndice) {
+                sec.classList.add('estado__pasado');
+            } else if (i === nuevoIndice) {
+                sec.classList.add('estado__actual');
+            } else {
+                sec.classList.add('estado__futuro');
+            }
+        });
+
+        this.links.forEach((link, i) => {
+            if (i === nuevoIndice) {
+                link.classList.add('activo');
+            } else {
+                link.classList.remove('activo');
+            }
+        });
+
+        this.indiceActual = nuevoIndice;
+        setTimeout(() => { this.bloqueado = false; }, 1000);
+    }
+
+    next() {
+        this.cambiarSeccion(this.indiceActual + 1);
+    }
+
+    prev() {
+        this.cambiarSeccion(this.indiceActual - 1);
+    }
+}
+
+cambiarSeccion(0);
+// Command Pattern Interfaces
+class Command {
+    execute() {}
+}
+
+class ScrollDownCommand extends Command {
+    constructor(controller) {
+        super();
+        this.controller = controller;
+    }
+    execute() {
+        this.controller.next();
+    }
+}
+
+class ScrollUpCommand extends Command {
+    constructor(controller) {
+        super();
+        this.controller = controller;
+    }
+    execute() {
+        this.controller.prev();
+    }
+}
+
+// Initialization
+const navController = new NavigationController(secciones, links);
+const scrollDown = new ScrollDownCommand(navController);
+const scrollUp = new ScrollUpCommand(navController);
+
+navController.cambiarSeccion(0);
+
+window.addEventListener('wheel', (e) => {
+    if (e.deltaY > 0) {
+        cambiarSeccion(indiceActual + 1);
+        scrollDown.execute();
+    } else {
+        cambiarSeccion(indiceActual - 1);
+        scrollUp.execute();
+    }
+});
+
+links.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = parseInt(link.getAttribute('data-index'));
+        cambiarSeccion(target);
+        navController.cambiarSeccion(target);
+    });
+});
+2. Separación de Estructura HTML (BEM)
+Aquí separamos el contenedor seccion-rueda del contenido específico (intro, proyectos, etc.). Ahora seccion-rueda actúa como un wrapper puro para la lógica de navegación, y el contenido interno tiene su propio bloque BEM independiente.
+
+e:\Appweb\isw-233-maca\Portafolio\index.html
+
+index.html
+-92
++102
+                <a href="Contacto" class="nav-link" data-index="4">Contacto</a>
+            </nav>
+        </header>
+        <div class="seccion-rueda intro">
+            <h1 class="intro__titulo">MIJAEL ANDER CALLEJAS AGUIRRE</h1>
+            <h2 class="intro__subtitulo">INGENIERO EN SOFTWARE</h2>
+            <p class="intro__texto">Estudiante de quinto semestre de Ingeniera en Software, ilustrador y editor de audio/video</p>
+        <div class="seccion-rueda">
+            <div class="intro">
+                <h1 class="intro__titulo">MIJAEL ANDER CALLEJAS AGUIRRE</h1>
+                <h2 class="intro__subtitulo">INGENIERO EN SOFTWARE</h2>
+                <p class="intro__texto">Estudiante de quinto semestre de Ingeniera en Software, ilustrador y editor de audio/video</p>
+            </div>
+        </div>
+        <div class = "seccion-rueda proyectos">
+            <h2 class="proyectos__h2">PROYECTOS REALIZADOS</h2>
+            <div class = "proyectos__contenedor">
+                <div class ="proyectos__tarjeta" onclick="window.open('https://drive.google.com/drive/folders/10ud3R1KHlCEVmI1xAp6oNOg2akF7WGTG')">
+                    <img src= "srcimages/Proyectos/TouhouBuild.png" class="proyectos__tarjeta__img">
+                    <h3 class="proyectos__tarjeta__h3">Heaven Studio Touhou Build</h3>
+                    <p class="proyectos__tarjeta__p">Editor y Videojuego de ritmo, inspirado en Rhythm Heaven, readaptando y poniendo los juegos de Touhou Rhythm Carnival</p>
+                </div>
+                <div class ="proyectos__tarjeta" onclick="window.open('https://github.com/Diegolew/ProyectoDise-oSoftware')">
+                    <img src= "srcimages/Proyectos/LaMesa.jpg" class="proyectos__tarjeta__img">
+                    <h3 class="proyectos__tarjeta__h3">La Mesa</h3>
+                    <p class="proyectos__tarjeta__p">Pagina para hacer la gestión dentro de un restaurante, adaptado para el uso de delivery, cocinero, cliente y mesero</p>
+                </div>
+                <div class ="proyectos__tarjeta" onclick="window.open('https://github.com/Andress-Mallea/Final-Progra-Base2')">
+                    <img src= "srcimages/Proyectos/PedidosAhorita.jpg" class="proyectos__tarjeta__img">
+                    <h3 class="proyectos__tarjeta__h3">Pedidos Ahorita</h3>
+                    <p class="proyectos__tarjeta__p">Pagina de compra y venta de diferentes productos, realizado para tener tu tienda online</p>
+        <div class="seccion-rueda">
+            <div class="proyectos">
+                <h2 class="proyectos__h2">PROYECTOS REALIZADOS</h2>
+                <div class="proyectos__contenedor">
+                    <div class="proyectos__tarjeta" onclick="window.open('https://drive.google.com/drive/folders/10ud3R1KHlCEVmI1xAp6oNOg2akF7WGTG')">
+                        <img src="srcimages/Proyectos/TouhouBuild.png" class="proyectos__tarjeta__img">
+                        <h3 class="proyectos__tarjeta__h3">Heaven Studio Touhou Build</h3>
+                        <p class="proyectos__tarjeta__p">Editor y Videojuego de ritmo, inspirado en Rhythm Heaven, readaptando y poniendo los juegos de Touhou Rhythm Carnival</p>
+                    </div>
+                    <div class="proyectos__tarjeta" onclick="window.open('https://github.com/Diegolew/ProyectoDise-oSoftware')">
+                        <img src="srcimages/Proyectos/LaMesa.jpg" class="proyectos__tarjeta__img">
+                        <h3 class="proyectos__tarjeta__h3">La Mesa</h3>
+                        <p class="proyectos__tarjeta__p">Pagina para hacer la gestión dentro de un restaurante, adaptado para el uso de delivery, cocinero, cliente y mesero</p>
+                    </div>
+                    <div class="proyectos__tarjeta" onclick="window.open('https://github.com/Andress-Mallea/Final-Progra-Base2')">
+                        <img src="srcimages/Proyectos/PedidosAhorita.jpg" class="proyectos__tarjeta__img">
+                        <h3 class="proyectos__tarjeta__h3">Pedidos Ahorita</h3>
+                        <p class="proyectos__tarjeta__p">Pagina de compra y venta de diferentes productos, realizado para tener tu tienda online</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "seccion-rueda blog">
+            <h2 class="blog__h2">Mi Blog</h2>
+            <div>
+                <div class = "blog__post">
+                    <img src= "srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo</h3>
+                        <p>descripcion</p>
+        <div class="seccion-rueda">
+            <div class="blog">
+                <h2 class="blog__h2">Mi Blog</h2>
+                <div>
+                    <div class="blog__post">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                        <div class="blog__content">
+                            <h3>Titulo</h3>
+                            <p>descripcion</p>
+                        </div>
+                    </div>
+                    <div class="blog__post">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                        <div class="blog__content">
+                            <h3>Titulo</h3>
+                            <p>descripcion</p>
+                        </div>
+                    </div>
+                    <div class="blog__post">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                        <div class="blog__content">
+                            <h3>Titulo</h3>
+                            <p>descripcion</p>
+                        </div>
+                    </div>
+                </div>
+                <div class = "blog__post">
+                    <img src= "srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo</h3>
+                        <p>descripcion</p>
+                    </div>
+                </div>
+                <div class = "blog__post">
+                    <img src= "srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo</h3>
+                        <p>descripcion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "seccion-rueda sobre-mi">
+            <h2 class="sobre-mi__h2">Sobre Mi</h2>
+            <div class="info">
+                <div class="info__seccion">
+                    <img src= "srcimages/Blog/FotoDePerfil.png" class="info__img">
+                    <div class="info__principal">
+                        <h3 class="info__principal__h2">Mijael Ander Callejas Aguirre</h3>
+                        <div class="info__tarjeta">
+                            <h3 class="info__tarjeta__h3">Info Basica</h3>
+                            <p class="info__tarjeta__p">Estudiante de quinto semestre de Ingeniera en Software, ilustrador y editor de audio/video</p>
+        <div class="seccion-rueda">
+            <div class="sobre-mi">
+                <h2 class="sobre-mi__h2">Sobre Mi</h2>
+                <div class="info">
+                    <div class="info__seccion">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="info__img">
+                        <div class="info__principal">
+                            <h3 class="info__principal__h2">Mijael Ander Callejas Aguirre</h3>
+                            <div class="info__tarjeta">
+                                <h3 class="info__tarjeta__h3">Info Basica</h3>
+                                <p class="info__tarjeta__p">Estudiante de quinto semestre de Ingeniera en Software, ilustrador y editor de audio/video</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info__tarjeta">
+                        <h3 class="info__tarjeta__h3">Educación</h3>
+                        <p class="info__tarjeta__p">Bachiller del colegio Británico Santa Cruz, actualmente estudiando Ingeniera en Software en la Universidad Catolica Boliviana Santa Cruz, con nivel de ingles B1, competidor en la competencia ICPC internacional 2025</p>
+                        <div class="info__tarjeta">
+                            <h3 class="info__tarjeta__h3">Educación</h3>
+                            <p class="info__tarjeta__p">Bachiller del colegio Británico Santa Cruz, actualmente estudiando Ingeniera en Software en la Universidad Catolica Boliviana Santa Cruz, con nivel de ingles B1, competidor en la competencia ICPC internacional 2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="info__seccion">
+                    <div class="info__tarjeta">
+                        <h3 class="info__tarjeta__h3">Experiencia</h3>
+                        <p class="info__tarjeta__p">Trabajo en equipo, apoyando como desarrollador, tester y como líder, con experiencia con un equipo de trabajo remoto, con comunicación constante y habla y entendimiento de ingles</p>
+                    </div>
+                    <div class="info__tarjeta">
+                        <h3 class="info__tarjeta__h3">Habilidades</h3>
+                        <p class="info__tarjeta__p">Desarrollador enfocado en diseño visual, , desarrollo de videojuegos en Unity y Scratch, con un muy buen entendimiento en C++, Java, Phyton, C#, con capacidad de analizar casos posibles para poder analizar problemas</p>
+                    </div>
+                    <div class="info__tarjeta">
+                        <h3 class="info__tarjeta__h3">Hobbies</h3>
+                        <p class="info__tarjeta__p">Diseño e ilustración digital, especializado en diseño de personajes con certificacion, editor de audio video, especializado en videos musicales, cortos, videos para youtube y tik tok, con experiencia de 6 años con Filmora y FL studio 20</p>
+                    <div class="info__seccion">
+                        <div class="info__tarjeta">
+                            <h3 class="info__tarjeta__h3">Experiencia</h3>
+                            <p class="info__tarjeta__p">Trabajo en equipo, apoyando como desarrollador, tester y como líder, con experiencia con un equipo de trabajo remoto, con comunicación constante y habla y entendimiento de ingles</p>
+                        </div>
+                        <div class="info__tarjeta">
+                            <h3 class="info__tarjeta__h3">Habilidades</h3>
+                            <p class="info__tarjeta__p">Desarrollador enfocado en diseño visual, , desarrollo de videojuegos en Unity y Scratch, con un muy buen entendimiento en C++, Java, Phyton, C#, con capacidad de analizar casos posibles para poder analizar problemas</p>
+                        </div>
+                        <div class="info__tarjeta">
+                            <h3 class="info__tarjeta__h3">Hobbies</h3>
+                            <p class="info__tarjeta__p">Diseño e ilustración digital, especializado en diseño de personajes con certificacion, editor de audio video, especializado en videos musicales, cortos, videos para youtube y tik tok, con experiencia de 6 años con Filmora y FL studio 20</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "seccion-rueda contacto">
+            <h2 class="contacto__h2">Contacto</h2>
+            <div class = "redsocial">
+                <div class = "redsocial__entrada" onclick="window.open('https://www.youtube.com/@Mijaneitor-Soysakiaytuno44')">
+                    <img src= "srcimages/Iconos/YouTube.png" class="redsocial__entrada__img">
+                    <h3>Youtube</h3>
+                </div>
+                <div class = "redsocial__entrada" onclick="window.open('https://www.tiktok.com/@soysakiaytuno')">
+                    <img src= "srcimages/Iconos/TikTok.png" class="redsocial__entrada__img">
+                    <h3>TikTok</h3>
+                </div>
+                <div class = "redsocial__entrada" onclick="window.open('https://www.linkedin.com/in/mijael-callejas-aguirre-ab305928b/')">
+                    <img src= "srcimages/Iconos/Linkedin.png" class="redsocial__entrada__img">
+                    <h3>Linkedin</h3>
+                </div>
+                <div class = "redsocial__entrada" onclick="window.open('mailto:soysakia44@gmail.com?Subject=Interesado%20en%20el%20servicio')">
+                    <img src= "srcimages/Iconos/Gmail.jpg" class="redsocial__entrada__img">
+                    <h3>Gmail</h3>
+                </div>
+                <div class = "redsocial__entrada" onclick="window.open('https://wa.me/59168406492?text=Interesado%20en%20el%20servicio')">
+                    <img src= "srcimages/Iconos/WhatsApp.png" class="redsocial__entrada__img">
+                    <h3>WhatsApp</h3>
+        <div class="seccion-rueda">
+            <div class="contacto">
+                <h2 class="contacto__h2">Contacto</h2>
+                <div class="redsocial">
+                    <div class="redsocial__entrada" onclick="window.open('https://www.youtube.com/@Mijaneitor-Soysakiaytuno44')">
+                        <img src="srcimages/Iconos/YouTube.png" class="redsocial__entrada__img">
+                        <h3>Youtube</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('https://www.tiktok.com/@soysakiaytuno')">
+                        <img src="srcimages/Iconos/TikTok.png" class="redsocial__entrada__img">
+                        <h3>TikTok</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('https://www.linkedin.com/in/mijael-callejas-aguirre-ab305928b/')">
+                        <img src="srcimages/Iconos/Linkedin.png" class="redsocial__entrada__img">
+                        <h3>Linkedin</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('mailto:soysakia44@gmail.com?Subject=Interesado%20en%20el%20servicio')">
+                        <img src="srcimages/Iconos/Gmail.jpg" class="redsocial__entrada__img">
+                        <h3>Gmail</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('https://wa.me/59168406492?text=Interesado%20en%20el%20servicio')">
+                        <img src="srcimages/Iconos/WhatsApp.png" class="redsocial__entrada__img">
+                        <h3>WhatsApp</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+hize la respectiva modularizacion, pero ahora el programa no responde o no funciona como deberia, que pude haber hecho mal?
+
+
+Gemini
+Responding with 3 Pro Preview
+Al modularizar tu código con import y export, has cambiado la forma en que el navegador interpreta los archivos JavaScript. Es muy probable que el error se deba a tres razones principales:
+
+Falta de export en los archivos: Los archivos que intentas importar (navegation-controller.js, command.js, etc.) deben exportar explícitamente sus clases.
+Rutas de importación incorrectas: En main.js, estás importando desde ./js/..., pero como main.js ya está dentro de la carpeta js, la ruta correcta es simplemente ./archivo.js.
+Configuración del HTML: Cuando usas módulos (imports), debes declarar el script en el HTML con type="module".
+Error de lógica en Scroll Up: El archivo command__scroll-up.js parece ser una copia exacta de "Scroll Down", por lo que tiene el nombre de clase incorrecto y la lógica invertida (next en lugar de prev).
+Aquí tienes las correcciones necesarias archivo por archivo:
+
+1. Agregar export a la clase base Command
+e:\Appweb\isw-233-maca\Portafolio\js\command.js
+
+command.js
+-1
++1
+class Command {
+export class Command {
+    execute() {}
+}
+2. Exportar el controlador de navegación
+e:\Appweb\isw-233-maca\Portafolio\js\navegation-controller.js
+
+navegation-controller.js
+-1
++1
+const secciones = document.querySelectorAll('.seccion-rueda');
+const links = document.querySelectorAll('.nav-link');
+
+class NavigationController {
+export class NavigationController {
+    constructor(sections, links) {
+        this.sections = sections;
+3. Corregir Scroll Down (Importar y Exportar)
+e:\Appweb\isw-233-maca\Portafolio\js\command__scroll-down.js
+
+command__scroll-down.js
+-1
++3
+class ScrollDownCommand extends Command {
+import { Command } from './command.js';
+
+export class ScrollDownCommand extends Command {
+    constructor(controller) {
+        super();
+        this.controller = controller;
+4. Corregir Scroll Up (Nombre, Lógica, Importar y Exportar)
+Este archivo tenía el error más grave: se llamaba ScrollDownCommand y ejecutaba next() en lugar de prev().
+
+e:\Appweb\isw-233-maca\Portafolio\js\command__scroll-up.js
+
+command__scroll-up.js
+-2
++4
+class ScrollDownCommand extends Command {
+import { Command } from './command.js';
+
+export class ScrollUpCommand extends Command {
+    constructor(controller) {
+        super();
+        this.controller = controller;
+    }
+    execute() {
+        this.controller.next();
+        this.controller.prev();
+    }
+}
+5. Corregir rutas en main.js
+Dado que main.js está en la misma carpeta que los otros archivos, no debes usar ./js/.
+
+e:\Appweb\isw-233-maca\Portafolio\js\main.js
+
+main.js
+-3
++3
+import { NavigationController } from './js/navegation-controller.js';
+import { ScrollDownCommand } from './js/command__scroll-down.js';
+import { ScrollUpCommand } from './js/command__scroll-up.js';
+import { NavigationController } from './navegation-controller.js';
+import { ScrollDownCommand } from './command__scroll-down.js';
+import { ScrollUpCommand } from './command__scroll-up.js';
+
+const secciones = document.querySelectorAll('.seccion-rueda');
+const links = document.querySelectorAll('.nav-link');
+6. Actualizar el HTML para usar Módulos
+Debes agregar type="module" al script principal y eliminar la referencia manual a navegation-controller.js, ya que ahora se importa automáticamente dentro de main.js.
+
+e:\Appweb\isw-233-maca\Portafolio\index.html
+
+index.html
+-2
++1
+            </div>
+        </div>
+        <div class="circle"></div>
+        <script src="js/navegation-controller.js"></script>
+        <script src="js/main.js"></script>
+        <script type="module" src="js/main.js"></script>
+    </body>
+</html>
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+Sigamos con el siguiente patron de diseño, añade un observer de interseccion, implementalo para tener un mejor control sobre las animaciones al cambiar de cada seccion, tambien para cuando lleguemos a algun extremo, se pueda controlar que pueda pasar al otro extremo haciendo como un ciclo
+
+
+Gemini
+Responding with 3 Pro Preview
+Aquí tienes las modificaciones para implementar el Patrón Observer utilizando la API IntersectionObserver, además de la lógica para la navegación cíclica (loop infinito) entre las secciones.
+
+He realizado los cambios en el archivo navegation-controller.js.
+
+Cambios realizados:
+Intersection Observer: Ahora el controlador inicializa un observador en el constructor. Este observador vigila cada sección y, cuando una sección entra en el viewport (es visible al menos un 50%), se dispara el método actualizarLinks. Esto desacopla la lógica de activación del menú de la lógica de cambio de sección.
+Navegación Cíclica: Se modificó cambiarSeccion para que compruebe los extremos. Si intentas ir antes de la primera sección, te lleva a la última; si intentas ir después de la última, te lleva a la primera.
+Limpieza: Se eliminaron las constantes globales innecesarias al inicio del archivo y el bucle manual de actualización de links dentro de cambiarSeccion, delegando esa responsabilidad al Observer.
+e:\Appweb\isw-233-maca\Portafolio\js\navegation-controller.js
+
+navegation-controller.js
+-12
++29
+const secciones = document.querySelectorAll('.seccion-rueda');
+const links = document.querySelectorAll('.nav-link');
+
+export class NavigationController {
+    constructor(sections, links) {
+        this.sections = sections;
+        this.links = links;
+        this.indiceActual = -1;
+        this.bloqueado = false;
+
+        // Implementación del Observer de Intersección
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.actualizarLinks(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        this.sections.forEach(section => {
+            this.observer.observe(section);
+        });
+    }
+
+    cambiarSeccion(nuevoIndice) {
+        if (this.bloqueado || nuevoIndice === this.indiceActual || nuevoIndice < 0 || nuevoIndice >= this.sections.length) return;
+        // Lógica cíclica: verificar extremos y rotar
+        if (nuevoIndice < 0) nuevoIndice = this.sections.length - 1;
+        else if (nuevoIndice >= this.sections.length) nuevoIndice = 0;
+
+        if (this.bloqueado || nuevoIndice === this.indiceActual) return;
+
+        this.bloqueado = true;
+            }
+        });
+
+        this.links.forEach((link, i) => {
+            if (i === nuevoIndice) {
+                link.classList.add('activo');
+            } else {
+                link.classList.remove('activo');
+            }
+        });
+
+        this.indiceActual = nuevoIndice;
+        setTimeout(() => { this.bloqueado = false; }, 1000);
+    }
+
+    actualizarLinks(seccionVisible) {
+        const index = Array.from(this.sections).indexOf(seccionVisible);
+        this.links.forEach((link, i) => {
+            if (i === index) {
+                link.classList.add('activo');
+            } else {
+                link.classList.remove('activo');
+            }
+        });
+    }
+
+    next() {
+        this.cambiarSeccion(this.indiceActual + 1);
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+ok, ahora ayudame con la modularizacion del patron observer, para que no todo este aqui
+
+
+Gemini
+Responding with 3 Pro Preview
+Claro que sí. Para modularizar el patrón Observer, vamos a extraer la lógica del IntersectionObserver que actualmente vive dentro del constructor de NavigationController y la moveremos a su propia clase dedicada.
+
+Esto nos permite tener un código más limpio en el controlador y una clase observadora reutilizable.
+
+Aquí tienes los cambios:
+
+Crear un nuevo archivo js/viewport-observer.js que encapsule la lógica de detección de intersección.
+Actualizar js/navegation-controller.js para importar y utilizar esta nueva clase.
+1. Nuevo archivo: Viewport Observer
+Creamos la clase que se encargará exclusivamente de vigilar los elementos y notificar cuando sean visibles.
+
+e:\Appweb\isw-233-maca\Portafolio\js\viewport-observer.js
+
+javascript
+export class ViewportObserver {
+    constructor(callback) {
+        this.callback = callback;
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.callback(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+    }
+
+    observe(elements) {
+        elements.forEach(element => {
+            this.observer.observe(element);
+        });
+    }
+}
+2. Actualizar Navigation Controller
+Ahora limpiamos el controlador importando la nueva clase y delegando la tarea de observación.
+
+e:\Appweb\isw-233-maca\Portafolio\js\navegation-controller.js
+
+navegation-controller.js
+-11
++4
+import { ViewportObserver } from './viewport-observer.js';
+
+export class NavigationController {
+    constructor(sections, links) {
+        this.sections = sections;
+        this.indiceActual = -1;
+        this.bloqueado = false;
+        
+        this.observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    this.actualizarLinks(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        this.sections.forEach(section => {
+            this.observer.observe(section);
+        });
+        this.observer = new ViewportObserver((target) => this.actualizarLinks(target));
+        this.observer.observe(this.sections);
+    }
+
+    cambiarSeccion(nuevoIndice) {
+Con estos cambios, tu NavigationController se enfoca solo en la lógica de navegación y control de estado, mientras que ViewportObserver maneja los detalles técnicos de la API de intersección del navegador.
+
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+implementemos ahora el factory, para poder tener un mejor manejo de lo que son las creaciones de proyectos__tarjeta y redsocial__entrada ya que con ambos al hacerle click te mandan a una pagina distinta, deben tener ese comportamiento igual de al hacerle click enviarte a una pagina distinta, manten la estetica de cada una y sus caracteristicas que tienen en su respectivo css, solo añadiremos este patron para que sea mas facil añadir o cambiar alguna informacion, enlace, imagen o descripcion de cada uno de estos
+
+
+Gemini
+Okay, let's implement the Factory Pattern to better manage the creation of proyectos__tarjeta and redsocial__entrada elements. This will make it easier to add or modify information, links, images, or descriptions for each of these elements.
+
+Here's how we'll do it:
+
+Create a Factory Class: We'll create a factory class that will handle the creation of these elements. This class will have methods to create each type of element.
+Define Element Types: We'll define the different types of elements that can be created.
+Implement Creation Logic: We'll implement the logic to create each type of element within the factory class.
+Use the Factory: We'll use the factory to create the elements in our code.
+Here are the file changes:
+
+main.js
+-0
++71
+import { NavigationController } from './navegation-controller.js';
+import { ScrollDownCommand } from './command__scroll-down.js';
+import { ScrollUpCommand } from './command__scroll-up.js';
+import { ElementFactory } from './element-factory.js';
+
+const secciones = document.querySelectorAll('.seccion-rueda');
+const links = document.querySelectorAll('.nav-link');
+        navController.cambiarSeccion(target);
+    });
+});
+
+// Project data
+const proyectosData = [
+    {
+        imageUrl: "srcimages/Proyectos/TouhouBuild.png",
+        title: "Heaven Studio Touhou Build",
+        description: "Editor y Videojuego de ritmo, inspirado en Rhythm Heaven, readaptando y poniendo los juegos de Touhou Rhythm Carnival",
+        link: "https://drive.google.com/drive/folders/10ud3R1KHlCEVmI1xAp6oNOg2akF7WGTG"
+    },
+    {
+        imageUrl: "srcimages/Proyectos/LaMesa.jpg",
+        title: "La Mesa",
+        description: "Pagina para hacer la gestión dentro de un restaurante, adaptado para el uso de delivery, cocinero, cliente y mesero",
+        link: "https://github.com/Diegolew/ProyectoDise-oSoftware"
+    },
+    {
+        imageUrl: "srcimages/Proyectos/PedidosAhorita.jpg",
+        title: "Pedidos Ahorita",
+        description: "Pagina de compra y venta de diferentes productos, realizado para tener tu tienda online",
+        link: "https://github.com/Andress-Mallea/Final-Progra-Base2"
+    }
+];
+
+// Social media data
+const redSocialData = [
+    {
+        imageUrl: "srcimages/Iconos/YouTube.png",
+        title: "Youtube",
+        link: "https://www.youtube.com/@Mijaneitor-Soysakiaytuno44"
+    },
+    {
+        imageUrl: "srcimages/Iconos/TikTok.png",
+        title: "TikTok",
+        link: "https://www.tiktok.com/@soysakiaytuno"
+    },
+    {
+        imageUrl: "srcimages/Iconos/Linkedin.png",
+        title: "Linkedin",
+        link: "https://www.linkedin.com/in/mijael-callejas-aguirre-ab305928b/"
+    },
+    {
+        imageUrl: "srcimages/Iconos/Gmail.jpg",
+        title: "Gmail",
+        link: "mailto:soysakia44@gmail.com?Subject=Interesado%20en%20el%20servicio"
+    },
+    {
+        imageUrl: "srcimages/Iconos/WhatsApp.png",
+        title: "WhatsApp",
+        link: "https://wa.me/59168406492?text=Interesado%20en%20el%20servicio"
+    }
+];
+
+// Get the containers
+const proyectosContainer = document.querySelector('.proyectos__contenedor');
+const redSocialContainer = document.querySelector('.redsocial');
+
+// Create the factory
+const elementFactory = new ElementFactory();
+
+// Create and append project elements
+proyectosData.forEach(data => {
+    const tarjeta = elementFactory.createElement('proyecto', data);
+    proyectosContainer.appendChild(tarjeta);
+});
+
+// Create and append social media elements
+redSocialData.forEach(data => {
+    const entrada = elementFactory.createElement('redSocial', data);
+    redSocialContainer.appendChild(entrada);
+});
+New file: element-factory.js
++51
+export class ElementFactory {
+    createElement(type, data) {
+        switch (type) {
+            case 'proyecto':
+                return this.createProyecto(data);
+            case 'redSocial':
+                return this.createRedSocial(data);
+            default:
+                throw new Error('Tipo de elemento no soportado');
+        }
+    }
+
+    createProyecto(data) {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('proyectos__tarjeta');
+        tarjeta.onclick = () => window.open(data.link);
+
+        const img = document.createElement('img');
+        img.src = data.imageUrl;
+        img.classList.add('proyectos__tarjeta__img');
+        tarjeta.appendChild(img);
+
+        const h3 = document.createElement('h3');
+        h3.classList.add('proyectos__tarjeta__h3');
+        h3.textContent = data.title;
+        tarjeta.appendChild(h3);
+
+        const p = document.createElement('p');
+        p.classList.add('proyectos__tarjeta__p');
+        p.textContent = data.description;
+        tarjeta.appendChild(p);
+
+        return tarjeta;
+    }
+
+    createRedSocial(data) {
+        const entrada = document.createElement('div');
+        entrada.classList.add('redsocial__entrada');
+        entrada.onclick = () => window.open(data.link);
+
+        const img = document.createElement('img');
+        img.src = data.imageUrl;
+        img.classList.add('redsocial__entrada__img');
+        entrada.appendChild(img);
+
+        const h3 = document.createElement('h3');
+        h3.textContent = data.title;
+        entrada.appendChild(h3);
+        return entrada;
+    }
+}
+index.html
+-20
++1
+            <div class="contacto">
+                <h2 class="contacto__h2">Contacto</h2>
+                <div class="redsocial">
+                    <div class="redsocial__entrada" onclick="window.open('https://www.youtube.com/@Mijaneitor-Soysakiaytuno44')">
+                        <img src="srcimages/Iconos/YouTube.png" class="redsocial__entrada__img">
+                        <h3>Youtube</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('https://www.tiktok.com/@soysakiaytuno')">
+                        <img src="srcimages/Iconos/TikTok.png" class="redsocial__entrada__img">
+                        <h3>TikTok</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('https://www.linkedin.com/in/mijael-callejas-aguirre-ab305928b/')">
+                        <img src="srcimages/Iconos/Linkedin.png" class="redsocial__entrada__img">
+                        <h3>Linkedin</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('mailto:soysakia44@gmail.com?Subject=Interesado%20en%20el%20servicio')">
+                        <img src="srcimages/Iconos/Gmail.jpg" class="redsocial__entrada__img">
+                        <h3>Gmail</h3>
+                    </div>
+                    <div class="redsocial__entrada" onclick="window.open('https://wa.me/59168406492?text=Interesado%20en%20el%20servicio')">
+                        <img src="srcimages/Iconos/WhatsApp.png" class="redsocial__entrada__img">
+                        <h3>WhatsApp</h3>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+Now, you have successfully implemented the Factory Pattern! To add or modify a project or social media link, you can simply update the corresponding data array in main.js. The factory will handle the rest.
+
+
+Mijaneitor
+Ok, antes de seguir al siguiente patron de diseño, ahora vamos a hacer una refactorizacion a blog, "en este apartado, que se vea un boton para poder acceder al blog, la animacion de acceder va directamente relacionado con lo que es el circulo que tenemos, que este sube y se sobrepone al fondo (el fondo se vuelve del color del circulo) y ahi recien se ve lo que hay en el blog actualmente, en la esquina superior izquierda debe haber un boton para poder volver a la seccion que ya tenemos, utiliza el observer que tenemos para poder hacer la animacion, y tambien, que la forma en la que se cambia de pantallas ya sea por botones o scroll esta deshabilitado hasta que se salga del blog, para evitar problemas con eso"
+
+
+Gemini
+Responding with 3 Pro Preview
+Thinking
+Claro que sí. Vamos a refactorizar la sección del Blog para implementar esta "vista inmersiva".
+
+Lo que haremos será:
+
+HTML: Modificar la estructura. La sección blog de la rueda ahora solo tendrá la introducción y el botón. El contenido real (los posts) se moverá a un contenedor overlay oculto.
+NavigationController: Añadir métodos para "suspender" y "reanudar" la navegación. Esto es crucial para cumplir el requisito de que no se pueda hacer scroll mientras estás leyendo el blog.
+Main.js: Implementar la lógica de interacción. Al hacer clic, el NavigationController se pausará, el círculo se expandirá (simulando un cambio de fondo) y aparecerá el contenido.
+Aquí tienes los cambios:
+
+1. Actualizar navegation-controller.js
+Necesitamos capacidad de bloquear la navegación globalmente cuando el blog está abierto.
+
+e:\Appweb\isw-233-maca\Portafolio\js\navegation-controller.js
+
+navegation-controller.js
+-1
++11
+        this.links = links;
+        this.indiceActual = -1;
+        this.bloqueado = false;
+        this.suspendido = false; // Nuevo estado para cuando el blog está abierto
+        
+        this.observer = new ViewportObserver((target) => this.actualizarLinks(target));
+        this.observer.observe(this.sections);
+        if (nuevoIndice < 0) nuevoIndice = this.sections.length - 1;
+        else if (nuevoIndice >= this.sections.length) nuevoIndice = 0;
+
+        if (this.bloqueado || nuevoIndice === this.indiceActual) return;
+        if (this.bloqueado || this.suspendido || nuevoIndice === this.indiceActual) return;
+
+        this.bloqueado = true;
+
+    prev() {
+        this.cambiarSeccion(this.indiceActual - 1);
+    }
+
+    // Métodos para controlar el estado global desde main.js
+    suspender() {
+        this.suspendido = true;
+    }
+
+    reanudar() {
+        this.suspendido = false;
+    }
+}
+2. Modificar index.html
+Movemos los posts a un nuevo contenedor blog-overlay y dejamos solo el botón de entrada en la rueda principal. También he agregado estilos en línea al overlay para asegurar que funcione la superposición visual solicitada sin necesidad de editar el CSS externo.
+
+e:\Appweb\isw-233-maca\Portafolio\index.html
+
+index.html
+-22
++34
+        <div class="seccion-rueda">
+            <div class="blog">
+                <h2 class="blog__h2">Mi Blog</h2>
+                <div>
+                    <div class="blog__post">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                        <div class="blog__content">
+                            <h3>Titulo</h3>
+                            <p>descripcion</p>
+                        </div>
+                    </div>
+                    <div class="blog__post">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                        <div class="blog__content">
+                            <h3>Titulo</h3>
+                            <p>descripcion</p>
+                        </div>
+                    </div>
+                    <div class="blog__post">
+                        <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                        <div class="blog__content">
+                            <h3>Titulo</h3>
+                            <p>descripcion</p>
+                        </div>
+                    </div>
+                <p class="blog__descripcion">Explora mis pensamientos y actualizaciones más recientes.</p>
+                <div class="blog__acceso">
+                    <button id="btn-abrir-blog" class="boton-generico">LEER BLOG</button>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+        <div class="circle"></div>
+        
+        <!-- Overlay del Blog (Oculto por defecto) -->
+        <div id="blog-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+            <button id="btn-cerrar-blog" style="position: absolute; top: 30px; left: 30px; z-index: 2001; padding: 10px 20px; cursor: pointer;">← Volver</button>
+            
+            <div class="blog-contenido-interno" style="width: 80%; height: 80%; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; position: relative; z-index: 2001;">
+                <!-- El contenido se movió aquí -->
+                <div class="blog__post">
+                    <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Actualización de Portfolio</h3>
+                        <p>Mejorando la experiencia de usuario con patrones de diseño.</p>
+                    </div>
+                </div>
+                <div class="blog__post">
+                    <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Desarrollo en Unity</h3>
+                        <p>Aprendiendo nuevas mecánicas para juegos 2D.</p>
+                    </div>
+                </div>
+                <div class="blog__post">
+                    <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Vida Universitaria</h3>
+                        <p>Balanceando estudios y proyectos personales.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module" src="js/main.js"></script>
+    </body>
+</html>
+3. Actualizar main.js
+Aquí implementamos la lógica:
+
+Obtenemos referencias al círculo y los elementos del blog.
+Al abrir: Suspendemos el control de navegación y escalamos el círculo para cubrir la pantalla.
+Al cerrar: Revertimos la animación y reactivamos el control.
+e:\Appweb\isw-233-maca\Portafolio\js\main.js
+
+main.js
+-0
++39
+        scrollDown.execute();
+    }
+});
+
+// --- Lógica de la Sección Blog (Refactorización) ---
+
+const btnAbrirBlog = document.getElementById('btn-abrir-blog');
+const btnCerrarBlog = document.getElementById('btn-cerrar-blog');
+const blogOverlay = document.getElementById('blog-overlay');
+const circleElement = document.querySelector('.circle');
+
+if (btnAbrirBlog && btnCerrarBlog && blogOverlay && circleElement) {
+    
+    btnAbrirBlog.addEventListener('click', () => {
+        // 1. Deshabilitar navegación (Observer/Controller)
+        navController.suspender();
+
+        // 2. Animación del círculo (Expandir para fondo)
+        // Asumimos que el circulo tiene una transición CSS
+        circleElement.style.transition = "transform 0.8s ease-in-out";
+        circleElement.style.transform = "scale(50)"; // Escala masiva para cubrir pantalla
+        circleElement.style.zIndex = "1500"; // Asegurar que quede detrás del overlay pero sobre el resto
+
+        // 3. Mostrar contenido del blog
+        setTimeout(() => {
+            blogOverlay.style.pointerEvents = "all";
+            blogOverlay.style.opacity = "1";
+        }, 400); // Esperar un poco a que el circulo crezca
+    });
+
+    btnCerrarBlog.addEventListener('click', () => {
+        blogOverlay.style.opacity = "0";
+        blogOverlay.style.pointerEvents = "none";
+
+        circleElement.style.transform = "scale(1)";
+        circleElement.style.zIndex = ""; // Restaurar z-index original
+        
+        setTimeout(() => {
+            navController.reanudar();
+        }, 800); // Esperar a que termine la animación
+    });
+}
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+el circulo debe volver a la pocision donde estaba al inicio, actualmente se mueve hacia la parte inferior derecha, ayudame con ese cambio
+
+
+Gemini
+Responding with 3 Pro Preview
+Thinking
+El problema que mencionas ocurre porque al establecer circleElement.style.transform = "scale(1)", estás sobrescribiendo cualquier transformación original que tuviera el círculo en tu CSS (como translate, rotate o posicionamientos específicos). Al forzarlo a scale(1), pierde esas coordenadas y se mueve a su posición por defecto (que a menudo se percibe como la esquina inferior derecha si estaba centrado con translate).
+
+Para solucionarlo, en lugar de forzar la escala a 1, debemos limpiar la propiedad transform del estilo en línea para que el navegador vuelva a aplicar lo que está definido en tu hoja de estilos CSS.
+
+Aquí tienes la corrección en js/main.js:
+
+e:\Appweb\isw-233-maca\Portafolio\js\main.js
+
+main.js
+-1
++1
+        blogOverlay.style.opacity = "0";
+        blogOverlay.style.pointerEvents = "none";
+
+        circleElement.style.transform = "scale(1)";
+        circleElement.style.transform = "";
+        circleElement.style.zIndex = ""; // Restaurar z-index original
+        
+        setTimeout(() => {
+Con este cambio (circleElement.style.transform = ""), el elemento recuperará suavemente su posición y estado original definidos en tu archivo CSS.
+
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+ok, en ves de usar el html con style, utiliza el css, utiliza lo que es blogs y blogaccess, para ajustar tu logica de style y adaptarla a la estetica que tenemos actualmente en el portafolio, ayudame con eso
+
+
+Gemini
+Responding with 3 Pro Preview
+Thinking
+¡Claro que sí! Vamos a limpiar el HTML y trasladar toda esa lógica de estilos a los archivos CSS correspondientes (blogaccess.css y blogs.css), siguiendo la metodología BEM y asegurando que main.js manipule clases en lugar de estilos en línea.
+
+Aquí tienes los cambios necesarios:
+
+1. Limpieza de index.html
+Eliminamos los atributos style y utilizamos clases semánticas. También aseguramos que el contenedor principal tenga el ID blog-overlay que espera el JavaScript.
+
+e:\Appweb\isw-233-maca\Portafolio\index.html
+
+index.html
+-3
++3
+        <div class="circle"></div>
+        
+        <!-- Overlay del Blog (Oculto por defecto) -->
+        <div class = "blogaccess">
+            <button id="btn-cerrar-blog" style="position: absolute; top: 30px; left: 30px; z-index: 2001; padding: 10px 20px; cursor: pointer;">← Volver</button>
+        <div class="blogaccess" id="blog-overlay">
+            <button id="btn-cerrar-blog" class="blogaccess__back">← Volver</button>
+            
+            <div class="blog-contenido-interno" style="width: 80%; height: 80%; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; position: relative; z-index: 2001;">
+            <div class="blogaccess__content">
+                <!-- El contenido se movió aquí -->
+                <div class="blog__post">
+                    <img src="srcimages/Blog/FotoDePerfil.png" class="blog__post__img">
+2. Definición de estilos en blogaccess.css
+Aquí definimos la apariencia del overlay, el botón de retorno y el contenedor de contenido. Usamos un modificador --visible para controlar cuándo se muestra.
+
+e:\Appweb\isw-233-maca\Portafolio\css\blocks\blogaccess\blogaccess.css
+
+blogaccess.css
+-6
++44
+ Show full code block 
+.blogaccess
+{
+    background-color: aliceblue;
+    border-radius: 15%;
+.blogaccess {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.blogaccess_botton
+{
+
+.blogaccess--visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.blogaccess__back {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 2001;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #4C71DB;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.blogaccess__content {
+    width: 80%;
+    height: 80%;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    position: relative;
+    z-index: 2001;
+}
+3. Actualización de main.js
+Ahora, en lugar de modificar propiedades style manualmente, simplemente añadimos o quitamos la clase blogaccess--visible. Esto hace el código más limpio y separa la lógica del diseño.
+
+e:\Appweb\isw-233-maca\Portafolio\js\main.js
+
+main.js
+-4
++2
+ Show full code block 
+
+        // 3. Mostrar contenido del blog
+        setTimeout(() => {
+            blogOverlay.style.pointerEvents = "all";
+            blogOverlay.style.opacity = "1";
+            blogOverlay.classList.add('blogaccess--visible');
+        }, 400); // Esperar un poco a que el circulo crezca
+    });
+
+    btnCerrarBlog.addEventListener('click', () => {
+        blogOverlay.style.opacity = "0";
+        blogOverlay.style.pointerEvents = "none";
+        blogOverlay.classList.remove('blogaccess--visible');
+
+        circleElement.style.transform = "";
+        circleElement.style.zIndex = ""; // Restaurar z-index original
+Generated by Gemini 3 Pro Preview
+
+Mijaneitor
+ahora dale un diseño para lo que es el contenido que esta dentro de las lineas 32 a la 38 en el html, para que sea acorde a la estetica actual, el blog description de la linea 34 debe tener una esteica similar a intro__texto y el boton hazlo con forme la estetica que ya hay. Adicionalmente elimina los ids, utiliza solo las clases no las ids
+
+
+Gemini
+Responding with 3 Pro Preview
+Thinking
+Aquí tienes las modificaciones solicitadas. He eliminado los IDs en el HTML reemplazándolos por clases, actualizado la lógica en JavaScript para que funcione con estas clases, y he creado un archivo CSS específico para la sección blog con los estilos requeridos.
+
+1. Actualización de index.html
+Eliminé los IDs (btn-abrir-blog, btn-cerrar-blog, blog-overlay) y agregué la clase blog__boton al botón de apertura para poder estilizarlo y seleccionarlo.
+
+e:\Appweb\isw-233-maca\Portafolio\index.html
+
+index.html
+-3
++3
+ Show full code block 
+                <h2 class="blog__h2">Mi Blog</h2>
+                <p class="blog__descripcion">Explora mis pensamientos y actualizaciones más recientes.</p>
+                <div class="blog__acceso">
+                    <button id="btn-abrir-blog" class="boton-generico">LEER BLOG</button>
+                    <button class="blog__boton boton-generico">LEER BLOG</button>
+                </div>
+            </div>
+        </div>
+        <div class="circle"></div>
+        
+        <!-- Overlay del Blog (Oculto por defecto) -->
+        <div class="blogaccess" id="blog-overlay">
+            <button id="btn-cerrar-blog" class="blogaccess__back">← Volver</button>
+        <div class="blogaccess">
+            <button class="blogaccess__back">← Volver</button>
+            
+            <div class="blogaccess__content">
+                <!-- El contenido se movió aquí -->
+2. Actualización de main.js
+Refactoricé los selectores para que busquen elementos por sus clases (.class) en lugar de IDs.
+
+e:\Appweb\isw-233-maca\Portafolio\js\main.js
+
+main.js
+-3
++3
+
+// --- Lógica de la Sección Blog (Refactorización) ---
+
+const btnAbrirBlog = document.getElementById('btn-abrir-blog');
+const btnCerrarBlog = document.getElementById('btn-cerrar-blog');
+const blogOverlay = document.getElementById('blog-overlay');
+const btnAbrirBlog = document.querySelector('.blog__boton');
+const btnCerrarBlog = document.querySelector('.blogaccess__back');
+const blogOverlay = document.querySelector('.blogaccess');
+const circleElement = document.querySelector('.circle');
+
+if (btnAbrirBlog && btnCerrarBlog && blogOverlay && circleElement) {
+3. Creación de estilos para el Blog
+He creado un nuevo archivo CSS con estilos que alinean la estética de la descripción con la de la introducción (intro__texto) y le dan al botón un diseño consistente.
+
+e:\Appweb\isw-233-maca\Portafolio\css\blocks\blog\blog.css
+
+css
+.blog {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+}
+
+.blog__h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.blog__descripcion {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    font-weight: 300;
+}
+
+.blog__acceso {
+    margin-top: 10px;
+}
+
+.blog__boton {
+    background: transparent;
+    border: 2px solid currentColor;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border-radius: 50px;
+}
+
+.blog__boton:hover {
+    background-color: #fff;
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}

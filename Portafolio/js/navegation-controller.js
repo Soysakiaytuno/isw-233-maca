@@ -6,6 +6,7 @@ export class NavigationController {
         this.links = links;
         this.indiceActual = -1;
         this.bloqueado = false;
+        this.suspendido = false; // Nuevo estado para cuando el blog está abierto
         
         this.observer = new ViewportObserver((target) => this.actualizarLinks(target));
         this.observer.observe(this.sections);
@@ -16,7 +17,7 @@ export class NavigationController {
         if (nuevoIndice < 0) nuevoIndice = this.sections.length - 1;
         else if (nuevoIndice >= this.sections.length) nuevoIndice = 0;
 
-        if (this.bloqueado || nuevoIndice === this.indiceActual) return;
+        if (this.bloqueado || this.suspendido || nuevoIndice === this.indiceActual) return;
 
         this.bloqueado = true;
 
@@ -53,5 +54,14 @@ export class NavigationController {
 
     prev() {
         this.cambiarSeccion(this.indiceActual - 1);
+    }
+
+    // Métodos para controlar el estado global desde main.js
+    suspender() {
+        this.suspendido = true;
+    }
+
+    reanudar() {
+        this.suspendido = false;
     }
 }

@@ -106,3 +106,40 @@ document.addEventListener('keydown', function(event) {
         scrollDown.execute();
     }
 });
+
+// --- Lógica de la Sección Blog (Refactorización) ---
+
+const btnAbrirBlog = document.querySelector('.blog__boton');
+const btnCerrarBlog = document.querySelector('.blogaccess__back');
+const blogOverlay = document.querySelector('.blogaccess');
+const circleElement = document.querySelector('.circle');
+
+if (btnAbrirBlog && btnCerrarBlog && blogOverlay && circleElement) {
+    
+    btnAbrirBlog.addEventListener('click', () => {
+        // 1. Deshabilitar navegación (Observer/Controller)
+        navController.suspender();
+
+        // 2. Animación del círculo (Expandir para fondo)
+        // Asumimos que el circulo tiene una transición CSS
+        circleElement.style.transition = "transform 0.8s ease-in-out";
+        circleElement.style.transform = "scale(50)"; // Escala masiva para cubrir pantalla
+        circleElement.style.zIndex = "1500"; // Asegurar que quede detrás del overlay pero sobre el resto
+
+        // 3. Mostrar contenido del blog
+        setTimeout(() => {
+            blogOverlay.classList.add('blogaccess--visible');
+        }, 400); // Esperar un poco a que el circulo crezca
+    });
+
+    btnCerrarBlog.addEventListener('click', () => {
+        blogOverlay.classList.remove('blogaccess--visible');
+
+        circleElement.style.transform = "";
+        circleElement.style.zIndex = ""; // Restaurar z-index original
+        
+        setTimeout(() => {
+            navController.reanudar();
+        }, 800); // Esperar a que termine la animación
+    });
+}
