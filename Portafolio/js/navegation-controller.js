@@ -13,7 +13,7 @@ export class NavigationController {
     }
 
     cambiarSeccion(nuevoIndice) {
-        // Lógica cíclica: verificar extremos y rotar
+        
         if (nuevoIndice < 0) nuevoIndice = this.sections.length - 1;
         else if (nuevoIndice >= this.sections.length) nuevoIndice = 0;
 
@@ -34,6 +34,12 @@ export class NavigationController {
         });
 
         this.indiceActual = nuevoIndice;
+
+        const activeLink = this.links[this.indiceActual];
+        if (activeLink) {
+            history.replaceState(null, null, activeLink.getAttribute('href'));
+        }
+
         setTimeout(() => { this.bloqueado = false; }, 1000);
     }
 
@@ -42,6 +48,7 @@ export class NavigationController {
         this.links.forEach((link, i) => {
             if (i === index) {
                 link.classList.add('activo');
+                history.replaceState(null, null, link.getAttribute('href'));
             } else {
                 link.classList.remove('activo');
             }

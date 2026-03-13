@@ -2,16 +2,24 @@ import { NavigationController } from './navegation-controller.js';
 import { ScrollDownCommand } from './command__scroll-down.js';
 import { ScrollUpCommand } from './command__scroll-up.js';
 import { ElementFactory } from './element-factory.js';
+import { LikeStateManager } from './like-state-manager.js';
+import { LikeCaretaker } from './like-caretaker.js';
 
 const secciones = document.querySelectorAll('.seccion-rueda');
 const links = document.querySelectorAll('.nav-link');
 
-// Initialization
 const navController = new NavigationController(secciones, links);
 const scrollDown = new ScrollDownCommand(navController);
 const scrollUp = new ScrollUpCommand(navController);
 
-navController.cambiarSeccion(0);
+const initialHash = window.location.hash;
+let initialIndex = 0;
+if (initialHash) {
+    const targetLink = Array.from(links).find(link => link.getAttribute('href') === initialHash);
+    if (targetLink) initialIndex = parseInt(targetLink.getAttribute('data-index'));
+}
+
+navController.cambiarSeccion(initialIndex);
 
 window.addEventListener('wheel', (e) => {
     if (e.deltaY > 0) {
@@ -29,7 +37,6 @@ links.forEach(link => {
     });
 });
 
-// Project data
 const proyectosData = [
     {
         imageUrl: "srcimages/Proyectos/TouhouBuild.png",
@@ -51,7 +58,6 @@ const proyectosData = [
     }
 ];
 
-// Social media data
 const redSocialData = [
     {
         imageUrl: "srcimages/Iconos/YouTube.png",
@@ -80,20 +86,16 @@ const redSocialData = [
     }
 ];
 
-// Get the containers
 const proyectosContainer = document.querySelector('.proyectos__contenedor');
 const redSocialContainer = document.querySelector('.redsocial');
 
-// Create the factory
 const elementFactory = new ElementFactory();
 
-// Create and append project elements
 proyectosData.forEach(data => {
     const tarjeta = elementFactory.createElement('proyecto', data);
     proyectosContainer.appendChild(tarjeta);
 });
 
-// Create and append social media elements
 redSocialData.forEach(data => {
     const entrada = elementFactory.createElement('redSocial', data);
     redSocialContainer.appendChild(entrada);
@@ -107,7 +109,6 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// --- Lógica de la Sección Blog (Refactorización) ---
 
 const btnAbrirBlog = document.querySelector('.blog__boton');
 const btnCerrarBlog = document.querySelector('.blogaccess__back');
@@ -117,29 +118,45 @@ const circleElement = document.querySelector('.circle');
 if (btnAbrirBlog && btnCerrarBlog && blogOverlay && circleElement) {
     
     btnAbrirBlog.addEventListener('click', () => {
-        // 1. Deshabilitar navegación (Observer/Controller)
         navController.suspender();
-
-        // 2. Animación del círculo (Expandir para fondo)
-        // Asumimos que el circulo tiene una transición CSS
         circleElement.style.transition = "transform 0.8s ease-in-out";
-        circleElement.style.transform = "scale(50)"; // Escala masiva para cubrir pantalla
-        circleElement.style.zIndex = "1500"; // Asegurar que quede detrás del overlay pero sobre el resto
+        circleElement.style.transform = "scale(50)";
+        circleElement.style.zIndex = "1500"; 
 
-        // 3. Mostrar contenido del blog
         setTimeout(() => {
             blogOverlay.classList.add('blogaccess--visible');
-        }, 400); // Esperar un poco a que el circulo crezca
+        }, 400); 
     });
 
     btnCerrarBlog.addEventListener('click', () => {
         blogOverlay.classList.remove('blogaccess--visible');
 
         circleElement.style.transform = "";
-        circleElement.style.zIndex = ""; // Restaurar z-index original
+        circleElement.style.zIndex = "";
         
         setTimeout(() => {
             navController.reanudar();
-        }, 800); // Esperar a que termine la animación
+        }, 800);
     });
 }
+
+const likeStateManager = new LikeStateManager();
+const likeCaretaker = new LikeCaretaker();
+
+const savedMemento = likeCaretaker.getMemento();
+likeStateManager.restore(savedMemento);
+
+const likeButtons = document.querySelectorAll('.blog__like');
+likeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const postElement = btn.closest('.blog__post');
+        if (postElement) {
+            const postId = postElement.dataset.postId;
+            
+            likeStateManager.toggleLike(postId);
+            
+            const newMemento = likeStateManager.save();
+            likeCaretaker.saveMemento(newMemento);
+        }
+    });
+});
