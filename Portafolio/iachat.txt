@@ -1256,3 +1256,743 @@ css
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
+
+SIINOSE AQUI ALGO
+
+analiza el codigo actual que tenemos y los patrones de diseño, enfocate en factory, en vez de estar añadiendo piesa por pieza, utilizemos un template de html y solo sobre eso armamos cada item de proyectos y de los enlaces de contacto
+
+
+Gemini
+Responding with 3.1 Pro Preview
+Thinking
+¡Excelente idea! Utilizar la etiqueta nativa <template> de HTML es una de las mejores prácticas para trabajar con creación de elementos en el DOM. Mantiene la estructura visual en el archivo HTML (donde pertenece) y deja que JavaScript se encargue únicamente de inyectar los datos y la lógica.
+
+Esto hace que nuestro código de ElementFactory sea mucho más limpio, fácil de leer y escalar, evitando la tediosa tarea de crear elemento por elemento con document.createElement.
+
+A continuación, implementaremos los templates en tu HTML y refactorizaremos la clase Factory para que los consuma.
+
+1. Añadir las plantillas al HTML
+Agregaremos las etiquetas <template> justo antes del llamado a tus scripts. Estas etiquetas son invisibles para el usuario, pero están disponibles para que JavaScript las clone.
+
+index.html
+-0
++15
+ Show full code block 
+                <div class="blog__post" data-post-id="post-3">
+                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo publicacion</h3>
+                        <p>Descripcion de publicacion.</p>
+                    </div>
+                    <button class="blog__like">❤</button>
+                </div>
+            </div>
+        </div>
+
+        <template id="template-proyecto">
+            <div class="proyectos__tarjeta">
+                <img class="proyectos__tarjeta__img">
+                <h3 class="proyectos__tarjeta__h3"></h3>
+                <p class="proyectos__tarjeta__p"></p>
+            </div>
+        </template>
+
+        <template id="template-redsocial">
+            <div class="redsocial__entrada">
+                <img class="redsocial__entrada__img">
+                <h3></h3>
+            </div>
+        </template>
+
+        <script type="module" src="main.js"></script>
+    </body>
+2. Refactorizar el Element Factory
+Ahora actualizaremos el patrón Factory. En su constructor, obtendrá las referencias a los templates. Luego, los métodos de creación solo clonarán ese molde y rellenarán el contenido específico.
+
+element-factory.js
+-18
++17
+export class ElementFactory {
+    constructor() {
+        this.templateProyecto = document.getElementById('template-proyecto');
+        this.templateRedSocial = document.getElementById('template-redsocial');
+    }
+
+    createElement(type, data) {
+        switch (type) {
+            case 'proyecto':
+                return this.createProyecto(data);
+            case 'redSocial':
+                return this.createRedSocial(data);
+            default:
+                throw new Error('Tipo de elemento no soportado');
+        }
+    }
+
+    createProyecto(data) {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('proyectos__tarjeta');
+        const clone = this.templateProyecto.content.cloneNode(true);
+        const tarjeta = clone.firstElementChild;
+        
+        tarjeta.onclick = () => window.open(data.link);
+
+        const img = document.createElement('img');
+        const img = tarjeta.querySelector('.proyectos__tarjeta__img');
+        img.src = data.imageUrl;
+        img.classList.add('proyectos__tarjeta__img');
+        tarjeta.appendChild(img);
+
+        const h3 = document.createElement('h3');
+        h3.classList.add('proyectos__tarjeta__h3');
+        const h3 = tarjeta.querySelector('.proyectos__tarjeta__h3');
+        h3.textContent = data.title;
+        tarjeta.appendChild(h3);
+
+        const p = document.createElement('p');
+        p.classList.add('proyectos__tarjeta__p');
+        const p = tarjeta.querySelector('.proyectos__tarjeta__p');
+        p.textContent = data.description;
+        tarjeta.appendChild(p);
+
+        return tarjeta;
+    }
+
+    createRedSocial(data) {
+        const entrada = document.createElement('div');
+        entrada.classList.add('redsocial__entrada');
+        const clone = this.templateRedSocial.content.cloneNode(true);
+        const entrada = clone.firstElementChild;
+        
+        entrada.onclick = () => window.open(data.link);
+
+        const img = document.createElement('img');
+        const img = entrada.querySelector('.redsocial__entrada__img');
+        img.src = data.imageUrl;
+        img.classList.add('redsocial__entrada__img');
+        entrada.appendChild(img);
+
+        const h3 = document.createElement('h3');
+        const h3 = entrada.querySelector('h3');
+        h3.textContent = data.title;
+        entrada.appendChild(h3);
+        
+        return entrada;
+    }
+}
+Ventajas de este cambio:
+Separación de responsabilidades: La estructura (<div>, <img>, <h3>, etc.) vuelve a estar en HTML, donde puedes visualizarla y editarla fácilmente de cara al futuro sin tener que tocar código JS.
+Mayor Rendimiento: Clonar un nodo (cloneNode(true)) a partir de un template compilado por el navegador internamente es generalmente más rápido que crear múltiples elementos createElement y anidarlos individualmente mediante JavaScript.
+Mantenibilidad: Si decides añadir una nueva etiqueta (por ejemplo, un subtítulo en proyectos), basta con agregar la etiqueta al HTML del <template> y rellenar ese nuevo campo en el Factory.
+Generated by Gemini 3.1 Pro Preview
+
+Mijaneitor
+utiliza ahora factory para los blog__post, para esto añade tipos de blog__post, los tipos se definiran por diferentes tags (cada post debe tener una lista de tags, ya que un post puede tener uno o varios) los tags pueden ser Tecnologia, arte, multimedia, casual Que en el factory puedas poner varios o muchos, usa un template tambien para eso, implementa esto, por que usaremos esto mas tarde
+
+
+Gemini
+Responding with 3.1 Pro Preview
+Thinking
+¡Excelente! Vamos a automatizar también los posts del blog utilizando el patrón Factory que ya tenemos implementado.
+
+Para lograrlo, añadiremos el template al HTML incluyendo un nuevo contenedor para los tags (blog__tags), limpiaremos el contenido estático que teníamos y luego actualizaremos el ElementFactory y el main.js para renderizar toda la información de manera dinámica.
+
+Aquí tienes los cambios necesarios:
+
+1. Actualizar el HTML
+Vaciaremos el contenido estático dentro de blogaccess__content y añadiremos un nuevo <template id="template-blogpost"> al final de tu documento que incluye el espacio dedicado a los tags.
+
+index.html
+-24
++13
+            <button class="blogaccess__back">← Volver</button>
+            
+            <div class="blogaccess__content">
+                <div class="blog__post" data-post-id="post-1">
+                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo publicacion</h3>
+                        <p>Descripcion de publicacion.</p>
+                    </div>
+                    <button class="blog__like">❤</button>
+                </div>
+                <div class="blog__post" data-post-id="post-2">
+                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo publicacion</h3>
+                        <p>Descripcion de publicacion.</p>
+                    </div>
+                    <button class="blog__like">❤</button>
+                </div>
+                <div class="blog__post" data-post-id="post-3">
+                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
+                    <div class="blog__content">
+                        <h3>Titulo publicacion</h3>
+                        <p>Descripcion de publicacion.</p>
+                    </div>
+                    <button class="blog__like">❤</button>
+                </div>
+                <!-- Los posts del blog se generarán dinámicamente aquí -->
+            </div>
+        </div>
+
+            </div>
+        </template>
+
+        <template id="template-blogpost">
+            <div class="blog__post">
+                <img class="blog__post__img">
+                <div class="blog__content">
+                    <h3></h3>
+                    <p></p>
+                    <div class="blog__tags"></div>
+                </div>
+                <button class="blog__like">❤</button>
+            </div>
+        </template>
+
+        <script type="module" src="main.js"></script>
+    </body>
+2. Refactorizar el Element Factory
+Añadimos la lógica al Factory para que sepa cómo manejar el nuevo tipo blogPost, incluyendo un recorrido por los tags para crear pequeños <span> que sirvan como etiquetas.
+
+element-factory.js
+-0
++30
+    constructor() {
+        this.templateProyecto = document.getElementById('template-proyecto');
+        this.templateRedSocial = document.getElementById('template-redsocial');
+        this.templateBlogPost = document.getElementById('template-blogpost');
+    }
+
+    createElement(type, data) {
+                return this.createProyecto(data);
+            case 'redSocial':
+                return this.createRedSocial(data);
+            case 'blogPost':
+                return this.createBlogPost(data);
+            default:
+                throw new Error('Tipo de elemento no soportado');
+        }
+        
+        return entrada;
+    }
+
+    createBlogPost(data) {
+        const clone = this.templateBlogPost.content.cloneNode(true);
+        const post = clone.firstElementChild;
+        
+        post.dataset.postId = data.id; // Importante para que el LikeStateManager siga funcionando
+
+        const img = post.querySelector('.blog__post__img');
+        img.src = data.imageUrl;
+
+        const h3 = post.querySelector('h3');
+        h3.textContent = data.title;
+
+        const p = post.querySelector('p');
+        p.textContent = data.description;
+
+        const tagsContainer = post.querySelector('.blog__tags');
+        if (data.tags && data.tags.length > 0) {
+            data.tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.classList.add('blog__tag');
+                span.textContent = tag;
+                tagsContainer.appendChild(span);
+            });
+        }
+        return post;
+    }
+}
+3. Actualizar Main.js
+Por último, vamos a definir la información (data) de los blogs, incluyendo nuestro arreglo de tags, e invocar el Factory. Es importante que insertemos los posts antes de que el gestor de likes lea el HTML.
+
+main.js
+-0
++30
+    }
+];
+
+const blogData = [
+    {
+        id: "post-1",
+        imageUrl: "images/Blog/FotoDePerfil.png",
+        title: "Actualización de Portfolio",
+        description: "Mejorando la experiencia de usuario con patrones de diseño.",
+        tags: ["Tecnología", "Multimedia"]
+    },
+    {
+        id: "post-2",
+        imageUrl: "images/Blog/FotoDePerfil.png",
+        title: "Desarrollo en Unity",
+        description: "Aprendiendo nuevas mecánicas para juegos 2D.",
+        tags: ["Tecnología", "Arte"]
+    },
+    {
+        id: "post-3",
+        imageUrl: "images/Blog/FotoDePerfil.png",
+        title: "Vida Universitaria",
+        description: "Balanceando estudios y proyectos personales.",
+        tags: ["Casual", "Arte"]
+    }
+];
+
+const proyectosContainer = document.querySelector('.proyectos__contenedor');
+const redSocialContainer = document.querySelector('.redsocial');
+const blogContainer = document.querySelector('.blogaccess__content');
+
+const elementFactory = new ElementFactory();
+
+    redSocialContainer.appendChild(entrada);
+});
+
+blogData.forEach(data => {
+    const post = elementFactory.createElement('blogPost', data);
+    blogContainer.appendChild(post);
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+Con estos cambios, tu blogaccess__content construirá dinámicamente los posts del blog, permitiéndote categorizarlos y añadir o eliminar publicaciones futuras directamente desde el array de blogData.
+
+Generated by Gemini 3.1 Pro Preview
+
+Mijaneitor
+en la pagina donde se ven los blog__post, añade un boton que filtre por las distintas categorias, y que filtre por cada tag, y tambien filtre los favoritos (a los que fue likeado), ya añade un css para que esten enmarcados en un cuadrado mas chiquito cada tag que hay en el blog post, manten la metodologia bem y puedes añadirlo en la carpeta de blocks con la misma forma que lo hacen los otros css
+
+
+Gemini
+Responding with 3.1 Pro Preview
+Thinking
+¡Perfecto! Vamos a añadir el sistema de filtrado manteniendo la metodología BEM. Además, le daremos el estilo solicitado a los tags para que se vean como pequeñas etiquetas cuadradas dentro de cada tarjeta de publicación.
+
+Para esto, añadiremos la botonera de filtrado en el HTML, conectaremos su lógica en main.js para que oculte/muestre los posts dinámicamente, y crearemos los archivos CSS correspondientes en tu carpeta de blocks.
+
+Aquí tienes las modificaciones:
+
+1. Actualizar el HTML
+Vamos a agregar los botones de filtro dentro de blogaccess__content (para que fluya con el flexbox) y enlazaremos los nuevos archivos CSS en la etiqueta <head>.
+
+index.html
+-0
++10
+<html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="css/blocks/blog/blog-filter.css">
+        <link rel="stylesheet" href="css/blocks/blog/blog-tag.css">
+    </head>
+    <body>
+        <header>
+            <button class="blogaccess__back">← Volver</button>
+            
+            <div class="blogaccess__content">
+                <div class="blog-filter">
+                    <button class="blog-filter__btn blog-filter__btn--active" data-filter="all">Todos</button>
+                    <button class="blog-filter__btn" data-filter="Tecnología">Tecnología</button>
+                    <button class="blog-filter__btn" data-filter="Arte">Arte</button>
+                    <button class="blog-filter__btn" data-filter="Multimedia">Multimedia</button>
+                    <button class="blog-filter__btn" data-filter="Casual">Casual</button>
+                    <button class="blog-filter__btn" data-filter="favorites">Favoritos ❤</button>
+                </div>
+                <!-- Los posts del blog se generarán dinámicamente aquí -->
+            </div>
+        </div>
+2. Actualizar Main.js
+Al final del archivo añadiremos el evento para manejar los clics del filtro. Además, haremos que al dar click al botón de "Me gusta" asigne explícitamente una clase BEM (blog__like--active) para tener una referencia visual precisa desde la que filtrar los favoritos.
+
+main.js
+-0
++42
+            const postId = postElement.dataset.postId;
+            
+            likeStateManager.toggleLike(postId);
+            btn.classList.toggle('blog__like--active'); // Aseguramos el estado visual para el filtro
+            
+            const newMemento = likeStateManager.save();
+            likeCaretaker.saveMemento(newMemento);
+        }
+    });
+});
+
+// --- Lógica de Filtro del Blog ---
+const filterButtons = document.querySelectorAll('.blog-filter__btn');
+filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // 1. Manejar estado visual de los botones del filtro
+        filterButtons.forEach(b => b.classList.remove('blog-filter__btn--active'));
+        btn.classList.add('blog-filter__btn--active');
+
+        const filterValue = btn.getAttribute('data-filter');
+        const posts = document.querySelectorAll('.blog__post');
+
+        // 2. Filtrar cada post según su etiqueta o si fue "likeado"
+        posts.forEach(post => {
+            let shouldShow = false;
+
+            if (filterValue === 'all') {
+                shouldShow = true;
+            } else if (filterValue === 'favorites') {
+                const likeBtn = post.querySelector('.blog__like');
+                // Revisa si el botón tiene el modifier activo u otro indicador
+                if (likeBtn && (likeBtn.classList.contains('blog__like--active') || likeBtn.classList.contains('active'))) {
+                    shouldShow = true;
+                }
+            } else {
+                // Revisa todos los tags del post para ver si incluye el valor filtrado
+                const tags = Array.from(post.querySelectorAll('.blog__tag')).map(t => t.textContent);
+                if (tags.includes(filterValue)) {
+                    shouldShow = true;
+                }
+            }
+
+            // 3. Aplicar clase BEM para ocultar
+            if (shouldShow) {
+                post.classList.remove('blog__post--hidden');
+            } else {
+                post.classList.add('blog__post--hidden');
+            }
+        });
+    });
+});
+3. Crear CSS de la botonera de Filtros
+Creamos un nuevo archivo para el bloque del filtro. Dado que está en un flex-container envolvente (el overlay), al darle width: 100% nos aseguramos de que el filtro siempre se mantenga en la parte superior del scrollbar antes de los post.
+
+New file: blog-filter.css
++31
+.blog-filter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+    padding: 10px 0;
+}
+
+.blog-filter__btn {
+    background-color: transparent;
+    border: 2px solid #4C71DB;
+    color: #4C71DB;
+    padding: 8px 18px;
+    border-radius: 8px; /* Cuadradito redondeado estético */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.blog-filter__btn:hover,
+.blog-filter__btn--active {
+    background-color: #4C71DB;
+    color: #fff;
+}
+
+.blog__post--hidden {
+    display: none !important;
+}
+4. Crear CSS de las etiquetas pequeñas (Tags)
+Agregamos el diseño BEM respectivo para los elementos blog__tag que ya son inyectados por el Factory.
+
+New file: blog-tag.css
++18
+.blog__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.blog__tag {
+    background-color: #f1f5f9;
+    color: #4C71DB;
+    border: 1px solid #cbd5e1;
+    padding: 4px 8px;
+    border-radius: 4px; /* Un cuadrado más chiquito */
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-block;
+}
+Con estos pasos implementados, los usuarios ahora tendrán una manera eficiente de explorar tus publicaciones mediante filtros sin necesidad de recargar la página ni tocar dependencias externas.
+
+Generated by Gemini 3.1 Pro Preview
+
+Mijaneitor
+Ajusta el css de blog__post para que mantenga el hancho, pero que se pueda extender en lo alto, para que los tags y el contenido encaje dentro de lo que es la caja, y la lista de filtrado debe ser diferente, debe ser un circulo en la esquina superior derecha donde al precionarlo, te sale ahi recien la lista de los elementos a los que puedes filtrar, debe tener un fondo blanco para poder diferenciarse del fondo, manteniendo la esteticaa ya establecida
+
+
+Gemini
+Responding with 3.1 Pro Preview
+Thinking
+¡Excelente iniciativa! Estos cambios mejorarán muchísimo la interfaz y la experiencia de usuario de tu blog, haciéndolo lucir mucho más limpio y moderno.
+
+Para lograr esto, vamos a realizar las siguientes modificaciones siguiendo estrictamente tu metodología BEM:
+
+Cambiar el alto de blog__post de fijo (height) a mínimo (min-height) para que el contenido determine su expansión.
+Modificar la estructura en tu index.html para sacar el bloque de filtros del flujo normal de los posts y añadir el botón circular (blog-filter__toggle) y su contenedor oculto (blog-filter__menu).
+Ajustar el CSS para posicionar el botón de filtro en la esquina superior derecha de tu ventana emergente de blog y darle estilo de menú desplegable.
+Conectar la lógica en main.js para alternar la visibilidad de ese menú de filtro.
+Aquí tienes los cambios necesarios:
+
+1. Actualizar el HTML
+Vamos a extraer el bloque .blog-filter del contenedor general y lo posicionaremos al mismo nivel que tu botón de retroceder. Así mismo, añadiremos el botón circular y el menú.
+
+index.html
+-8
++12
+        <div class="blogaccess">
+            <button class="blogaccess__back">← Volver</button>
+            
+            <div class="blog-filter">
+                <button class="blog-filter__toggle" aria-label="Abrir filtros">🔍</button>
+                <div class="blog-filter__menu">
+                    <button class="blog-filter__btn blog-filter__btn--active" data-filter="all">Todos</button>
+                    <button class="blog-filter__btn" data-filter="Tecnología">Tecnología</button>
+                    <button class="blog-filter__btn" data-filter="Arte">Arte</button>
+                    <button class="blog-filter__btn" data-filter="Multimedia">Multimedia</button>
+                    <button class="blog-filter__btn" data-filter="Casual">Casual</button>
+                    <button class="blog-filter__btn" data-filter="favorites">Favoritos ❤</button>
+                </div>
+            </div>
+
+            <div class="blogaccess__content">
+                <div class="blog-filter">
+                    <button class="blog-filter__btn blog-filter__btn--active" data-filter="all">Todos</button>
+                    <button class="blog-filter__btn" data-filter="Tecnología">Tecnología</button>
+                    <button class="blog-filter__btn" data-filter="Arte">Arte</button>
+                    <button class="blog-filter__btn" data-filter="Multimedia">Multimedia</button>
+                    <button class="blog-filter__btn" data-filter="Casual">Casual</button>
+                    <button class="blog-filter__btn" data-filter="favorites">Favoritos ❤</button>
+                </div>
+                <!-- Los posts del blog se generarán dinámicamente aquí -->
+            </div>
+        </div>
+2. Actualizar el CSS del Blog y Filtros
+Haremos que la tarjeta crezca hacia abajo con min-height, y convertiremos la botonera en un menú desplegable estético posicionado en la esquina superior derecha (z-index: 2002 para que esté por encima del contenido).
+
+(Nota: Como tienes reglas duplicadas de filtros en ambos archivos según el contexto, aplicaremos los cambios al archivo del bloque principal y al archivo individual para asegurar que ambos estén en perfecta sincronización)
+
+blogs.css
+-8
++52
+.blog__post
+{
+    background-color: #ffffff;
+    padding: 20px;
+    width: 750px;
+    height: 100px;
+    min-height: 100px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    flex-direction: row;
+}
+.blog-filter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+    padding: 10px 0;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    z-index: 2002;
+}
+
+.blog-filter__toggle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #4C71DB;
+    color: #4C71DB;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.blog-filter__toggle:hover {
+    transform: scale(1.1);
+    background-color: #f1f5f9;
+}
+
+.blog-filter__menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.blog-filter__menu--active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.blog-filter__btn {
+    background-color: transparent;
+    border: 2px solid #4C71DB;
+    color: #4C71DB;
+    padding: 8px 18px;
+    border-radius: 8px; /* Cuadradito redondeado estético */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+blog-filter.css
+-7
++51
+.blog-filter {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 25px;
+    padding: 10px 0;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    z-index: 2002;
+}
+
+.blog-filter__toggle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #4C71DB;
+    color: #4C71DB;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.blog-filter__toggle:hover {
+    transform: scale(1.1);
+    background-color: #f1f5f9;
+}
+
+.blog-filter__menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.blog-filter__menu--active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.blog-filter__btn {
+    background-color: transparent;
+    border: 2px solid #4C71DB;
+    color: #4C71DB;
+    padding: 8px 18px;
+    border-radius: 8px; /* Cuadradito redondeado estético */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+3. Actualizar la lógica en Main.js
+Por último, enlazaremos los eventos de click para que el botón de apertura (la lupa) muestre u oculte el menú. Como buena práctica de experiencia de usuario, también haremos que el menú se oculte automáticamente cada vez que seleccionas un filtro.
+
+main.js
+-0
++12
+});
+
+// --- Lógica de Filtro del Blog ---
+const filterToggleBtn = document.querySelector('.blog-filter__toggle');
+const filterMenu = document.querySelector('.blog-filter__menu');
+const filterButtons = document.querySelectorAll('.blog-filter__btn');
+
+if (filterToggleBtn && filterMenu) {
+    filterToggleBtn.addEventListener('click', () => {
+        filterMenu.classList.toggle('blog-filter__menu--active');
+    });
+}
+
+filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // 1. Manejar estado visual de los botones del filtro
+        filterButtons.forEach(b => b.classList.remove('blog-filter__btn--active'));
+        btn.classList.add('blog-filter__btn--active');
+
+        // Ocultar menú tras seleccionar una opción
+        if (filterMenu) filterMenu.classList.remove('blog-filter__menu--active');
+
+        const filterValue = btn.getAttribute('data-filter');
+        const posts = document.querySelectorAll('.blog__post');
+
+Con estos cambios, .blog__post crecerá verticalmente de manera automática cuando haya muchos "tags" u otro contenido y tu nuevo menú de filtrado estará oculto sutilmente en un elegante botón en la esquina de la pantalla.
+
+Generated by Gemini 3.1 Pro Preview
+
+Mijaneitor
+el blog__post en caso de que no haya mas, debe mantenerse al margen de lo que es su contenido, debe mantenerse como un rectangulo delgado, tal cual se ve como cuando hay varios, por mas que este este solo, ayudame ajustando eso
+
+
+Gemini
+Responding with 3.1 Pro Preview
+Thinking
+El problema que estás experimentando ocurre porque el contenedor principal de los posts (.blogaccess__content) utiliza Flexbox (display: flex; flex-wrap: wrap;). Por defecto, cuando hay una sola fila de contenido, Flexbox intenta "estirar" (stretch) los elementos para que ocupen toda la altura disponible del contenedor.
+
+Para evitar esto y lograr que .blog__post mantenga siempre su altura natural (un rectángulo delgado) independientemente de cuántos elementos haya, podemos decirle a la tarjeta que se alinee al inicio de su contenedor usando align-self: flex-start;.
+
+Aquí tienes la modificación en tu archivo CSS correspondiente:
+
+blogs.css
+-0
++1
+    min-height: 100px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+}
+.blog__post__img
+Con este pequeño cambio, la tarjeta le dice a Flexbox que no quiere estirarse verticalmente para llenar el espacio sobrante, respetando así su tamaño por contenido (sus tags, la descripción y el título) y manteniéndose como un rectángulo atractivo aunque sea el único post filtrado.
