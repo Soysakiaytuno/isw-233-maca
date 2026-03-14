@@ -2,8 +2,8 @@ import { NavigationController } from './js/navegation-controller.js';
 import { ScrollDownCommand } from './js/command__scroll-down.js';
 import { ScrollUpCommand } from './js/command__scroll-up.js';
 import { ElementFactory } from './js/element-factory.js';
-import { LikeStateManager } from './js/like-state-manager.js';
-import { LikeCaretaker } from './js/like-caretaker.js';
+import { LikeStateManager } from './js/favorite-state-manager.js';
+import { LikeCaretaker } from './js/favorite-caretaker.js';
 
 const secciones = document.querySelectorAll('.seccion-rueda');
 const links = document.querySelectorAll('.nav-link');

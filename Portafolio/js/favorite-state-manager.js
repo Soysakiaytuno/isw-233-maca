@@ -1,4 +1,4 @@
-import { LikeMemento } from './like-memento.js';
+import { LikeMemento } from './favorite-memento.js';
 
 export class LikeStateManager {
     constructor() {
