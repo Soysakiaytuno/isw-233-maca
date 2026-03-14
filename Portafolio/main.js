@@ -1,9 +1,9 @@
-import { NavigationController } from './navegation-controller.js';
-import { ScrollDownCommand } from './command__scroll-down.js';
-import { ScrollUpCommand } from './command__scroll-up.js';
-import { ElementFactory } from './element-factory.js';
-import { LikeStateManager } from './like-state-manager.js';
-import { LikeCaretaker } from './like-caretaker.js';
+import { NavigationController } from './js/navegation-controller.js';
+import { ScrollDownCommand } from './js/command__scroll-down.js';
+import { ScrollUpCommand } from './js/command__scroll-up.js';
+import { ElementFactory } from './js/element-factory.js';
+import { LikeStateManager } from './js/like-state-manager.js';
+import { LikeCaretaker } from './js/like-caretaker.js';
 
 const secciones = document.querySelectorAll('.seccion-rueda');
 const links = document.querySelectorAll('.nav-link');
@@ -39,19 +39,19 @@ links.forEach(link => {
 
 const proyectosData = [
     {
-        imageUrl: "srcimages/Proyectos/TouhouBuild.png",
+        imageUrl: "images/Proyectos/TouhouBuild.png",
         title: "Heaven Studio Touhou Build",
         description: "Editor y Videojuego de ritmo, inspirado en Rhythm Heaven, readaptando y poniendo los juegos de Touhou Rhythm Carnival",
         link: "https://drive.google.com/drive/folders/10ud3R1KHlCEVmI1xAp6oNOg2akF7WGTG"
     },
     {
-        imageUrl: "srcimages/Proyectos/LaMesa.jpg",
+        imageUrl: "images/Proyectos/LaMesa.jpg",
         title: "La Mesa",
         description: "Pagina para hacer la gestión dentro de un restaurante, adaptado para el uso de delivery, cocinero, cliente y mesero",
         link: "https://github.com/Diegolew/ProyectoDise-oSoftware"
     },
     {
-        imageUrl: "srcimages/Proyectos/PedidosAhorita.jpg",
+        imageUrl: "images/Proyectos/PedidosAhorita.jpg",
         title: "Pedidos Ahorita",
         description: "Pagina de compra y venta de diferentes productos, realizado para tener tu tienda online",
         link: "https://github.com/Andress-Mallea/Final-Progra-Base2"
@@ -60,27 +60,27 @@ const proyectosData = [
 
 const redSocialData = [
     {
-        imageUrl: "srcimages/Iconos/YouTube.png",
+        imageUrl: "images/Iconos/YouTube.png",
         title: "Youtube",
         link: "https://www.youtube.com/@Mijaneitor-Soysakiaytuno44"
     },
     {
-        imageUrl: "srcimages/Iconos/TikTok.png",
+        imageUrl: "images/Iconos/TikTok.png",
         title: "TikTok",
         link: "https://www.tiktok.com/@soysakiaytuno"
     },
     {
-        imageUrl: "srcimages/Iconos/Linkedin.png",
+        imageUrl: "images/Iconos/Linkedin.png",
         title: "Linkedin",
         link: "https://www.linkedin.com/in/mijael-callejas-aguirre-ab305928b/"
     },
     {
-        imageUrl: "srcimages/Iconos/Gmail.jpg",
+        imageUrl: "images/Iconos/Gmail.jpg",
         title: "Gmail",
         link: "mailto:soysakia44@gmail.com?Subject=Interesado%20en%20el%20servicio"
     },
     {
-        imageUrl: "srcimages/Iconos/WhatsApp.png",
+        imageUrl: "images/Iconos/WhatsApp.png",
         title: "WhatsApp",
         link: "https://wa.me/59168406492?text=Interesado%20en%20el%20servicio"
     }
