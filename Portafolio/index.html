@@ -2,6 +2,8 @@
 <html>
     <head>
         <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="css/blocks/blog/blog-filter.css">
+        <link rel="stylesheet" href="css/blocks/blog/blog-tag.css">
     </head>
     <body>
         <header>
@@ -85,33 +87,49 @@
         <div class="blogaccess">
             <button class="blogaccess__back">← Volver</button>
             
-            <div class="blogaccess__content">
-                <div class="blog__post" data-post-id="post-1">
-                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
-                    <div class="blog__content">
-                        <h3>Titulo publicacion</h3>
-                        <p>Descripcion de publicacion.</p>
-                    </div>
-                    <button class="blog__like">❤</button>
-                </div>
-                <div class="blog__post" data-post-id="post-2">
-                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
-                    <div class="blog__content">
-                        <h3>Titulo publicacion</h3>
-                        <p>Descripcion de publicacion.</p>
-                    </div>
-                    <button class="blog__like">❤</button>
-                </div>
-                <div class="blog__post" data-post-id="post-3">
-                    <img src="images/Blog/FotoDePerfil.png" class="blog__post__img">
-                    <div class="blog__content">
-                        <h3>Titulo publicacion</h3>
-                        <p>Descripcion de publicacion.</p>
-                    </div>
-                    <button class="blog__like">❤</button>
+            <div class="blog-filter">
+                <button class="blog-filter__toggle" aria-label="Abrir filtros">🔍</button>
+                <div class="blog-filter__menu">
+                    <button class="blog-filter__btn blog-filter__btn--active" data-filter="all">Todos</button>
+                    <button class="blog-filter__btn" data-filter="Tecnología">Tecnología</button>
+                    <button class="blog-filter__btn" data-filter="Arte">Arte</button>
+                    <button class="blog-filter__btn" data-filter="Multimedia">Multimedia</button>
+                    <button class="blog-filter__btn" data-filter="Casual">Casual</button>
+                    <button class="blog-filter__btn" data-filter="favorites">Favoritos ❤</button>
                 </div>
             </div>
+
+            <div class="blogaccess__content">
+                <!-- Los posts del blog se generarán dinámicamente aquí -->
+            </div>
         </div>
+
+        <template id="template-proyecto">
+            <div class="proyectos__tarjeta">
+                <img class="proyectos__tarjeta__img">
+                <h3 class="proyectos__tarjeta__h3"></h3>
+                <p class="proyectos__tarjeta__p"></p>
+            </div>
+        </template>
+
+        <template id="template-redsocial">
+            <div class="redsocial__entrada">
+                <img class="redsocial__entrada__img">
+                <h3></h3>
+            </div>
+        </template>
+
+        <template id="template-blogpost">
+            <div class="blog__post">
+                <img class="blog__post__img">
+                <div class="blog__content">
+                    <h3></h3>
+                    <p></p>
+                    <div class="blog__tags"></div>
+                </div>
+                <button class="blog__like">❤</button>
+            </div>
+        </template>
 
         <script type="module" src="main.js"></script>
     </body>

@@ -86,8 +86,33 @@ const redSocialData = [
     }
 ];
 
+const blogData = [
+    {
+        id: "post-1",
+        imageUrl: "images/Blog/FotoDePerfil.png",
+        title: "Actualización de Portfolio",
+        description: "Mejorando la experiencia de usuario con patrones de diseño.",
+        tags: ["Tecnología", "Multimedia"]
+    },
+    {
+        id: "post-2",
+        imageUrl: "images/Blog/FotoDePerfil.png",
+        title: "Desarrollo en Unity",
+        description: "Aprendiendo nuevas mecánicas para juegos 2D.",
+        tags: ["Tecnología", "Arte"]
+    },
+    {
+        id: "post-3",
+        imageUrl: "images/Blog/FotoDePerfil.png",
+        title: "Vida Universitaria",
+        description: "Balanceando estudios y proyectos personales.",
+        tags: ["Casual", "Arte"]
+    }
+];
+
 const proyectosContainer = document.querySelector('.proyectos__contenedor');
 const redSocialContainer = document.querySelector('.redsocial');
+const blogContainer = document.querySelector('.blogaccess__content');
 
 const elementFactory = new ElementFactory();
 
@@ -99,6 +124,11 @@ proyectosData.forEach(data => {
 redSocialData.forEach(data => {
     const entrada = elementFactory.createElement('redSocial', data);
     redSocialContainer.appendChild(entrada);
+});
+
+blogData.forEach(data => {
+    const post = elementFactory.createElement('blogPost', data);
+    blogContainer.appendChild(post);
 });
 
 document.addEventListener('keydown', function(event) {
@@ -154,9 +184,63 @@ likeButtons.forEach(btn => {
             const postId = postElement.dataset.postId;
             
             likeStateManager.toggleLike(postId);
+            btn.classList.toggle('blog__like--active'); // Aseguramos el estado visual para el filtro
             
             const newMemento = likeStateManager.save();
             likeCaretaker.saveMemento(newMemento);
         }
+    });
+});
+
+// --- Lógica de Filtro del Blog ---
+const filterToggleBtn = document.querySelector('.blog-filter__toggle');
+const filterMenu = document.querySelector('.blog-filter__menu');
+const filterButtons = document.querySelectorAll('.blog-filter__btn');
+
+if (filterToggleBtn && filterMenu) {
+    filterToggleBtn.addEventListener('click', () => {
+        filterMenu.classList.toggle('blog-filter__menu--active');
+    });
+}
+
+filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // 1. Manejar estado visual de los botones del filtro
+        filterButtons.forEach(b => b.classList.remove('blog-filter__btn--active'));
+        btn.classList.add('blog-filter__btn--active');
+
+        // Ocultar menú tras seleccionar una opción
+        if (filterMenu) filterMenu.classList.remove('blog-filter__menu--active');
+
+        const filterValue = btn.getAttribute('data-filter');
+        const posts = document.querySelectorAll('.blog__post');
+
+        // 2. Filtrar cada post según su etiqueta o si fue "likeado"
+        posts.forEach(post => {
+            let shouldShow = false;
+
+            if (filterValue === 'all') {
+                shouldShow = true;
+            } else if (filterValue === 'favorites') {
+                const likeBtn = post.querySelector('.blog__like');
+                // Revisa si el botón tiene el modifier activo u otro indicador
+                if (likeBtn && (likeBtn.classList.contains('blog__like--active') || likeBtn.classList.contains('active'))) {
+                    shouldShow = true;
+                }
+            } else {
+                // Revisa todos los tags del post para ver si incluye el valor filtrado
+                const tags = Array.from(post.querySelectorAll('.blog__tag')).map(t => t.textContent);
+                if (tags.includes(filterValue)) {
+                    shouldShow = true;
+                }
+            }
+
+            // 3. Aplicar clase BEM para ocultar
+            if (shouldShow) {
+                post.classList.remove('blog__post--hidden');
+            } else {
+                post.classList.add('blog__post--hidden');
+            }
+        });
     });
 });
