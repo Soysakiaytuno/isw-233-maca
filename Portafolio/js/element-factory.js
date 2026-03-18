@@ -45,7 +45,7 @@ export class ElementFactory {
         const img = entrada.querySelector('.redsocial__entrada__img');
         img.src = data.imageUrl;
 
-        const h3 = entrada.querySelector('h3');
+        const h3 = entrada.querySelector('.redsocial__entrada__h3');
         h3.textContent = data.title;
         
         return entrada;
