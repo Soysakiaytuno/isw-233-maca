@@ -56,7 +56,7 @@
 }
 .info__tarjeta {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra predeterminada al contenedor */
-    transition: transform 0.3s ease, box-shadow 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease, opacity 0.3s ease;
     position: relative;
 }
 
@@ -66,4 +66,9 @@
     outline: 2px solid #4F32B7;
     outline-offset: 4px;
     z-index: 10;
+}
+
+.info__tarjeta__relegated {
+    transform: scale(0.95);
+    opacity: 0.5;
 }

@@ -4,6 +4,8 @@ import { ScrollUpCommand } from './js/command__scroll-up.js';
 import { ElementFactory } from './js/element-factory.js';
 import { LikeStateManager } from './js/favorite-state-manager.js';
 import { LikeCaretaker } from './js/favorite-caretaker.js';
+import { FocusSubject, FocusObserver } from './js/resize-observer.js';
+import { BlogMutationObserver } from './js/blog-mutation-observer.js';
 
 const secciones = document.querySelectorAll('.seccion-rueda');
 const links = document.querySelectorAll('.nav-link');
@@ -116,19 +118,30 @@ const blogContainer = document.querySelector('.blogaccess__content');
 
 const elementFactory = new ElementFactory();
 
+const proyectosSubject = new FocusSubject();
 proyectosData.forEach(data => {
     const tarjeta = elementFactory.createElement('proyecto', data);
     proyectosContainer.appendChild(tarjeta);
+    new FocusObserver(tarjeta, proyectosSubject, 'proyectos__tarjeta');
 });
 
+const redSocialSubject = new FocusSubject();
 redSocialData.forEach(data => {
     const entrada = elementFactory.createElement('redSocial', data);
     redSocialContainer.appendChild(entrada);
+    new FocusObserver(entrada, redSocialSubject, 'redsocial__entrada');
 });
 
 blogData.forEach(data => {
     const post = elementFactory.createElement('blogPost', data);
     blogContainer.appendChild(post);
+});
+
+// Aplicar patrón Observer a las tarjetas de Sobre Mí (que ya están estáticas en el HTML)
+const infoSubject = new FocusSubject();
+const infoTarjetas = document.querySelectorAll('.info__tarjeta');
+infoTarjetas.forEach(tarjeta => {
+    new FocusObserver(tarjeta, infoSubject, 'info__tarjeta');
 });
 
 document.addEventListener('keydown', function(event) {
@@ -147,15 +160,19 @@ const circleElement = document.querySelector('.circle');
 
 if (btnAbrirBlog && btnCerrarBlog && blogOverlay && circleElement) {
     
+    // Instanciamos el observer de mutación
+    new BlogMutationObserver(circleElement, () => {
+        // Mantenemos un pequeño retraso visual para que termine de cubrir la pantalla
+        setTimeout(() => {
+            blogOverlay.classList.add('blogaccess--visible');
+        }, 400); 
+    });
+
     btnAbrirBlog.addEventListener('click', () => {
         navController.suspender();
         circleElement.style.transition = "transform 0.8s ease-in-out";
         circleElement.style.transform = "scale(50)";
         circleElement.style.zIndex = "1500"; 
-
-        setTimeout(() => {
-            blogOverlay.classList.add('blogaccess--visible');
-        }, 400); 
     });
 
     btnCerrarBlog.addEventListener('click', () => {

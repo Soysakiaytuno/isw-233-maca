@@ -26,6 +26,11 @@ Factory: Para la creacion de los elementos de blog post, tarjetas de proyecto y 
 Observer: Se utiliza observer, mas especificamente el Observer Interseccion, para hacer un manejo correcto del control del scroll y saber cuando acaba para dar la vuelta y volver a empezar desde el inicio<br>
 Command: El comand se utilizo para tener un mejor control del scroll implementacion con los botones y al hacer un scroll se llame al command para que este ejecute lo que es requerido
 Memento: Se utilizo memento para hacer un guardado y captura en el local storage para la implementacion del like, en el cual se mantiene por mas que la pagina se reinicie
+<h2>Observer api</h2>
+Se implementaron 3 tipos de observer api, intersection, mutation y resize<br>
+Se utilizo el observer interseccion para el control de los movimientos de la animacion al cambiar de una pestaña a otra, para que en el momento donde termine (llegue a contacto) vuelva al inicio, y si estas en inicio se pueda ir directamente al final, haciendo el control para una especie de scroll infinito<br>
+Se utilizo el observer mutation para controlar el estado de la pestaña al momento de entrar al blog, ya que para entrar a este mismo, hacemos uso del circulo que esta en pantalla, al hacer el cambio de forma de este para que cubra toda la pantalla se hace la trancision del portafolio al blog<br>
+Se utilizo el resize observer para hacer un control y realse de los botones a seleccionar, ya que al poner el mouse por encima de un elemento seleccionable o a destaca, este tiene un pequeño cambio de tamaño, hice que para cuando el elemento este destacado usando el resize observer los demas se opaquen y se muevan un poco para resaltar el elemento destacado
 <h2>Link al figma</h2>
 https://www.figma.com/design/RgmPV904bFMy9uHGnto2X9/CV?node-id=8-36&t=YQXeITJz42V21X4i-1
 <br>
