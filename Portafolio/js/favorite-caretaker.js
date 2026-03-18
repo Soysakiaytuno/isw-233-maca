@@ -1,4 +1,4 @@
-import { LikeMemento } from './favorite-memento.js';
+import { LikeMemento } from './like-memento.js';
 
 export class LikeCaretaker {
     constructor(storageKey = 'blogLikesMemento') {

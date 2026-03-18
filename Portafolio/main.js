@@ -201,7 +201,6 @@ likeButtons.forEach(btn => {
             const postId = postElement.dataset.postId;
             
             likeStateManager.toggleLike(postId);
-            btn.classList.toggle('blog__like--active'); // Aseguramos el estado visual para el filtro
             
             const newMemento = likeStateManager.save();
             likeCaretaker.saveMemento(newMemento);
