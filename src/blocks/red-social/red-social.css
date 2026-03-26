@@ -24,20 +24,17 @@
 .redsocial__entrada {
     transition: transform 0.3s ease, box-shadow 0.3s ease, outline 0.3s ease, outline-offset 0.3s ease, opacity 0.3s ease;
     position: relative;
-    /* Sin sombra predeterminada en el contenedor según tu solicitud */
 }
 
-/* Sombras individuales predeterminadas */
 .redsocial__entrada__img {
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15)); /* drop-shadow es ideal para imágenes transparentes como iconos */
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
 }
 
 .redsocial__entrada__h3 {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Sombra solo para el texto */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-/* Efecto Hover sobre el contenedor */
-.redsocial__entrada__hover {
+.redsocial__entrada:hover {
     transform: scale(1.05);
     box-shadow: 0 12px 24px rgba(79, 50, 183, 0.2);
     outline: 2px solid #4F32B7;

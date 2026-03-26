@@ -1,0 +1,28 @@
+# Dependencias
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Entorno y credenciales
+.env
+.env.local
+.env.production
+
+# Cobertura de tests
+coverage/
+.nyc_output
+
+# Build
+dist/
+build/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

@@ -17,7 +17,7 @@
     flex-direction: column;
     display: flex;
 }
-.info__principal__h2
+.info__principal__titulo
 {
     color: #4F32B7;
     display: inline-block;

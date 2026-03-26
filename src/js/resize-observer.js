@@ -1,4 +1,3 @@
-// Subject: Actúa como el coordinador central de un grupo de elementos
 export class FocusSubject {
     constructor() {
         this.observers = [];
@@ -8,7 +7,6 @@ export class FocusSubject {
         this.observers.push(observer);
     }
 
-    // Cuando un elemento crece, notifica a los demás para que se alejen
     notifyFocus(activeObserver) {
         this.observers.forEach(obs => {
             if (obs !== activeObserver) {
@@ -17,7 +15,6 @@ export class FocusSubject {
         });
     }
 
-    // Cuando el mouse sale, notifica a todos para volver a la normalidad
     notifyBlur() {
         this.observers.forEach(obs => {
             obs.reset();
@@ -25,7 +22,6 @@ export class FocusSubject {
     }
 }
 
-// Observer: Envuelve tu tarjeta HTML y se comunica con el coordinador
 export class FocusObserver {
     constructor(element, subject, baseClassName) {
         this.element = element;
