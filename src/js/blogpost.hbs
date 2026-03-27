@@ -1,0 +1,13 @@
+<div class="blog__post" data-post-id="{{id}}">
+    <img class="blog__post__img" src="{{imageUrl}}" alt="{{title}}">
+    <div class="blog__content">
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+        <div class="blog__tags">
+            {{#each tags}}
+            <span class="blog__tag">{{this}}</span>
+            {{/each}}
+        </div>
+    </div>
+    <button class="blog__like">❤</button>
+</div>
